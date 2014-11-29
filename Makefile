@@ -1,28 +1,56 @@
+EXE=analog
+INT=CommandReader.h #ApacheLogFileParser.h
+SRC=$(INT:.h=.cpp)
+OBJ=$(INT:.h=.o)
+	
+MainSRC=main.cpp
+MainOBJ=$(MainSRC:.cpp=.o)
+	
+ECHO=@echo
+
+Compilator=g++
 CompilationsOptions=-Wall -pedantic
+Linker=g++
+LinkerOptions=
 
-analog: main.o CommandReader.o
-	g++ -o analog main.o CommandReader.o
+$(EXE): $(MainOBJ) $(OBJ)
+	$(Linker) -o $(EXE) $(MainOBJ) $(OBJ) $(LinkerOptions)
 
-main.o: main.cpp CommandReader.h
-	g++ -o main.o -c main.cpp $(CompilationsOptions)
+$(MainOBJ): $(MainSRC) $(INT)
+	$(ECHO) "Compilation de $(MainSRC)"
+	$(Compilator) -o $(MainOBJ) -c $(MainSRC) $(CompilationsOptions)
 
-CommandReader.o: CommandReader.cpp CommandReader.h
-	g++ -o CommandReader.o -c CommandReader.cpp $(CompilationsOptions)
+%.o: %.cpp
+	$(ECHO) "Compilation de $<"
+	$(Compilator) -c $< $(CompilationsOptions)
 	
 # ***** TESTS ***** #
-testsSrcDir=./testsSrc/
-CommandReaderTestDir=./Tests/Test_CommandReader/
+TestTARGET=tests
+TestsSRCDir=./testsSrc/
+TestsEXEDir=./Tests/
 
-tests: $(CommandReaderTestDir)TCommandReader
+TestsSRC=$(TestsSRCDir)TCommandReader.cpp
+TestsOBJ=$(TestsSRC:.cpp=.o)
 
-$(CommandReaderTestDir)TCommandReader: $(testsSrcDir)TCommandReader.o CommandReader.o
-	g++ -o $(CommandReaderTestDir)TCommandReader $(testsSrcDir)TCommandReader.o CommandReader.o
+CommandReaderTestDir=$(TestsEXEDir)Test_CommandReader/
 
-$(testsSrcDir)TCommandReader.o: $(testsSrcDir)TCommandReader.cpp
-	g++ -o $(testsSrcDir)TCommandReader.o -c $(testsSrcDir)TCommandReader.cpp $(CompilationsOptions)
+
+TestsEXE=$(CommandReaderTestDir)TCommandReader
+
+$(TestTARGET): $(TestsEXE)
+
+# Comp : COMMAND READER test #
+$(CommandReaderTestDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
+	$(Linker) -o $(CommandReaderTestDir)TCommandReader $(TestsSRCDir)TCommandReader.o CommandReader.o
+
+$(TestsSRCDir)TCommandReader.o: $(TestsSRCDir)TCommandReader.cpp
+	$(Compilator) -o $(TestsSRCDir)TCommandReader.o -c $(TestsSRCDir)TCommandReader.cpp $(CompilationsOptions)
 	
 	
 # ***** CLEAN ***** #
-.PHONY: clean
-clean:
-	rm -f analog #...
+CLEAN=clean
+RM=rm
+RMFlags=-f
+.PHONY: $(CLEAN)
+$(CLEAN):
+	$(RM) $(RMFlags) $(EXE) $(OBJ) $(MainOBJ) $(TestsEXE) $(TestsOBJ)

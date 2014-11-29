@@ -60,6 +60,7 @@ CommandReader::CommandReader (int argc, char** argv)
     cout << "Appel au constructeur de <CommandReader>" << endl;
 #endif
     
+    parameters = NULL;
     // TODO : Faire analyse de la ligne de commande + remplissage erreur + isGood 
     
 } //----- Fin de CommandReader
@@ -77,7 +78,6 @@ CommandReader::~CommandReader ( )
     {
         delete parameters;
     }
-    
 } //----- Fin de ~CommandReader
 
 
