@@ -20,13 +20,7 @@ int main(int argc, char** argv)
     
     cout << "Autre traitement..." << endl;
     
-    
-    
-    if (parameters != NULL)
-    {
-        delete parameters;
-    }
-    
+      
     return 0;
 }
 
