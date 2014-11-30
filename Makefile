@@ -9,7 +9,7 @@ MainOBJ=$(MainSRC:.cpp=.o)
 ECHO=@echo
 
 Compilator=g++
-CompilationsOptions=-Wall -pedantic
+CompilationsOptions=-Wall -pedantic -std=c++11
 Linker=g++
 LinkerOptions=
 

@@ -70,6 +70,19 @@ protected:
     // Contrat :
     //
     
+    void insertParameters(std::string key, std::string value);
+    // Mode d'emploi :
+    //  Insert deux chaînes de caractères dans la structure de données de l'interpréteur.
+    // Contrat :
+    //
+    
+    void setError(std::string message);
+    // Mode d'emploi :
+    //  Met l'interpréteur de ligne de commande dans un état d'erreur.
+    //  Met à jour le booléen isGood et le message d'erreur avec le paramètre.
+    // Contrat :
+    //  
+    
 private:
 //------------------------------------------------------- Méthodes privées
 

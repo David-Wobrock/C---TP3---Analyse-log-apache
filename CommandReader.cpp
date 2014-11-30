@@ -15,6 +15,8 @@ using namespace std;
 
 //------------------------------------------------------ Include personnel
 #include "CommandReader.h"
+#include <set>
+#include <stdlib.h>
 
 //------------------------------------------------------------- Constantes
 
@@ -62,7 +64,9 @@ CommandReader::CommandReader (int argc, char** argv)
     parameters = new map<string, string>;
     isGood = false;
     
+    set<string> optionWithoutArgs = {"-x"};
     bool hasFoundLogFile = false;
+    bool hasTriedToFindLogFile = false;
             
     for (int i = 1; i < argc; ++i)
     {
@@ -71,64 +75,115 @@ CommandReader::CommandReader (int argc, char** argv)
         // Si l'argument ne commence pas par un tiret, c'est le nom du fichier de log
         if (arg[0] != '-')
         {
+            hasTriedToFindLogFile = true;
+            
             if (hasFoundLogFile)
             {
-                errorMessage = "Plus d'un fichier de log apache a été détecté.";
-                isGood = false;
+                setError("Plus d'un fichier de log apache a été détecté.");
                 break;
             }
             // Le nom du fichier doit au moins faire 5 (a.log par exemple)
             if (arg.size() < 5)
             {
-                errorMessage = "Le nom du fichier log apache est trop court.";
-                isGood = false;
+                setError("Le nom du fichier log apache est trop court.");
                 break;  
             }
             // Vérification de l'extension (.txt ou .log)
             string argExtension = arg.substr(arg.size()-4, arg.size());
             if (argExtension != ".txt" && argExtension != ".log")
             {
-                errorMessage = "L'extension du fichier de log apache est invalide.";
-                isGood = false;
+                setError("L'extension du fichier de log apache est invalide.");
                 break;
             }
                 
             isGood = true;
             hasFoundLogFile = true;
-            parameters->insert(pair<string, string>(arg, ""));
+            insertParameters(arg, "");
         }
         // Si l'argument a un tiret
         else
         {
+            // S'il n'y que un tiret
+            if (arg.size() < 2)
+            {
+                setError("L'option a besoin d'un nom après le tiret.");
+                break;
+            }
             
+            // Si c'est une option qui n'a pas besoin d'argument
+            if (optionWithoutArgs.find(arg) != optionWithoutArgs.end())
+            {
+                insertParameters(arg, "");
+            }
+            // Si c'est une option qui a besoin d'un argument
+            else
+            {
+                // S'il n'y a pas d'argument après (si c'est le dernier, ou celui ou le suivant commence par -)
+                if (i+1 >= argc || argv[i+1][0] == '-')
+                {
+                    setError("Il manque l'argument après " + arg + ".");
+                    break;
+                }
+                
+                string argument = argv[i+1];
+                
+                // Cas spéciaux pour l'option -g
+                if (arg == "-g")
+                {
+                    // Si l'argument est trop court
+                    if (argument.size() < 5)
+                    {
+                        setError("L'argument de l'option -g est trop court.");
+                        break;
+                    }
+                    // Si l'extension est invalide (.dot)
+                    if (argument.substr(argument.size()-4, argument.size()) != ".dot")
+                    {
+                        setError("L'argument de l'option -g doit avoir l'extension .dot");
+                        break;
+                    }
+                }
+                
+                // Cas spéciaux pour l'option -t
+                if (arg == "-t")
+                {
+                    bool argIsDigit = true;
+                    for (unsigned int i = 0; i < argument.size(); ++i)
+                    {
+                        if (!isdigit(argument[i]))
+                        {
+                            setError("L'argument de l'option -t n'est pas un entier.");
+                            argIsDigit = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!argIsDigit)
+                    {
+                        break;
+                    }
+                    
+                    int intArg = atoi(argument.c_str());
+                    
+                    if (intArg < 0 || 23 < intArg)
+                    {
+                        setError("L'argument de l'option -t n'est pas compris entre 0 et 23.");
+                        break;
+                    }
+                    
+                    insertParameters(arg, argument);
+                }
+                
+                // ++i pour incrémenter d'abord prendre la valeur à i+1, puis la boucle for réincrémentera pour sauter le traitement de l'argument
+                insertParameters(arg, string(argv[++i]));
+            }
         }
-        // si après un truc avec un tiret avec lequel on attend une suite
-        
-        // Si après un truc avec un tiret on attend rien
     }
     
-    
-    // TODO : Faire analyse de la ligne de commande + remplissage erreur + isGood 
-    /*
-    def trait_arg(argv):
-	saisie={}
-	argIdx = 0
-	nbitems=len(argv)
-	for argItem in argv:
-
-		if argItem.find('-',0,1) != -1 and argIdx +1 < nbitems and argv[argIdx+1].find('-',0,1) == -1:
-			# on recherche les paramètres commençant par un moins.
-			# si ils sont suivis par un autre paramètre ne commençant pas
-			# par un moins, on associe le paramètre suivant a ce paramètre.
-			saisie[argItem]=argv[argIdx+1]
-		elif argItem.find('-',0,1) != -1 and argIdx +1 < nbitems and argv[argIdx+1].find('-',0,1) == 0:
-			saisie[argItem]=''
-		elif argItem.find('-',0,1) != -1 and argIdx +1 >= nbitems:
-			saisie[argItem]=''
-	
-		argIdx += 1
-	return saisie
-    */
+    if (!hasTriedToFindLogFile)
+    {
+        setError("Fichier de log apache manquant.");
+    }
 } //----- Fin de CommandReader
 
 
@@ -149,7 +204,18 @@ CommandReader::~CommandReader ( )
 //----------------------------------------------------- Méthodes protégées
 void CommandReader::displayHelp() const
 {
-    cout << "Help syntaxe" << endl;
+    cout << "Help syntaxe..." << endl;
 } //---- Fin de la méthode displayHelp
+
+void CommandReader::insertParameters(string key, string value)
+{
+    parameters->insert(pair<string, string>(key, value));
+}
+
+void CommandReader::setError(string message)
+{
+    errorMessage = message;
+    isGood = false;
+}
 
 //------------------------------------------------------- Méthodes privées
