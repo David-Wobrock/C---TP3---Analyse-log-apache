@@ -196,6 +196,7 @@ CommandReader::~CommandReader ( )
 #endif
     
     delete parameters;
+    
 } //----- Fin de ~CommandReader
 
 
@@ -204,7 +205,32 @@ CommandReader::~CommandReader ( )
 //----------------------------------------------------- Méthodes protégées
 void CommandReader::displayHelp() const
 {
-    cout << "Help syntaxe..." << endl;
+    cout << "\t***** Aide du programme analog *****" << endl;
+    
+    cout << endl << "NOM" << endl;
+    cout << "\tanalog - analise un fichier de log apache" << endl;
+    
+    cout << endl << "SYNOPSIS" << endl;
+    cout << "\tanalog [OPTION] FICHIERLOG" << endl;
+    
+    cout << endl << "DESCRIPTION" << endl;
+    cout << "\tAffiche sur la sortie standard les dix documents les plus visités, par ordre décroissant." << endl;
+    cout << "\tLe FICHIERLOG doit se terminer par l'extension .log ou .txt." << endl;
+    cout << "\tLes arguments peuvent être écrit dans n'importe quel ordre." << endl;
+    
+    cout << endl << "\tOPTION :" << endl;
+    cout << "\t-x" << endl;
+    cout << "\t\tIgnore les documents qui ont une extension de type image, css ou javascript." << endl;
+    cout << endl << "\t-g FICHIERGRAPH" << endl;
+    cout << "\t\tGénère un fichier FICHIERGRAPH au format GraphViz. Ce document contient tous les noeuds et arcs, ainsi que le nombre de parcours." << endl;
+    cout << "\t\tFICHIERGRAPH doit se finir par .dot." << endl;
+    cout << "\t\tSi FICHIERGRAPH existe, il est écrasé et remplacé par le nouveau fichier." << endl;
+    cout << endl << "\t-t HEURE" << endl;
+    cout << "\t\tLe programme ne prend que en compte les hits effectue dans l'intervalle de HEURE à HEURE+1." << endl;
+    cout << "\t\tHEURE est un entier compris entre 0 et 23 (inclus)." << endl;
+    
+    cout << endl << "AUTHOR" << endl;
+    cout << "\tEcrit par Loïc Touzard et David Wobrock (2014)" << endl;
 } //---- Fin de la méthode displayHelp
 
 void CommandReader::insertParameters(string key, string value)

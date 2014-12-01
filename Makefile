@@ -8,12 +8,13 @@ MainOBJ=$(MainSRC:.cpp=.o)
 	
 ECHO=@echo
 
-Compilator=g++
+Compilator=@g++
 CompilationsOptions=-Wall -pedantic -std=c++11
-Linker=g++
+Linker=@g++
 LinkerOptions=
 
 $(EXE): $(MainOBJ) $(OBJ)
+	$(ECHO) "Edition des liens de $(EXE)"
 	$(Linker) -o $(EXE) $(MainOBJ) $(OBJ) $(LinkerOptions)
 
 $(MainOBJ): $(MainSRC) $(INT)
@@ -41,9 +42,11 @@ $(TestTARGET): $(TestsEXE)
 
 # Comp : COMMAND READER test #
 $(CommandReaderTestDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
+	$(ECHO) "Edition des liens de $(CommandReaderTestDir)TCommandReader"
 	$(Linker) -o $(CommandReaderTestDir)TCommandReader $(TestsSRCDir)TCommandReader.o CommandReader.o
 
 $(TestsSRCDir)TCommandReader.o: $(TestsSRCDir)TCommandReader.cpp
+	$(ECHO) "Compilation de $(TestsSRCDir)TCommandReader.cpp"
 	$(Compilator) -o $(TestsSRCDir)TCommandReader.o -c $(TestsSRCDir)TCommandReader.cpp $(CompilationsOptions)
 	
 	
