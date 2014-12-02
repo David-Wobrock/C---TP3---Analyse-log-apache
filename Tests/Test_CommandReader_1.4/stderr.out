@@ -1,0 +1,2 @@
+L'option a besoin d'un nom après le tiret.
+./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG

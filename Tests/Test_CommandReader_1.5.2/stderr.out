@@ -1,0 +1,2 @@
+L'argument -t est présent plus d'une fois.
+./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG

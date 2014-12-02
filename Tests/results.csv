@@ -1,2 +1,5 @@
 Test ID;Return code validation;Out result;StdErr result;File creation result;Global result
-Test_CommandReader_1.0;2;1;2;2;1
+Test_CommandReader_1.0;2;2;1;2;1
+Test_CommandReader_1.1;2;2;1;2;1
+Test_CommandReader_1.2;2;2;1;2;1
+Test_CommandReader_1.3;2;2;1;2;1

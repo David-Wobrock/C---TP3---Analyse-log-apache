@@ -39,7 +39,7 @@ bool CommandReader::IsGood()
     {
         if (errorMessage != "")
         {
-            cout << errorMessage << endl;
+            cerr << errorMessage << endl;
             displaySyntaxe();
         }
         return isGood; // False
@@ -154,7 +154,7 @@ CommandReader::CommandReader (int argc, char** argv)
                     // Si l'extension est invalide (.dot)
                     if (argument.substr(argument.size()-4, argument.size()) != ".dot")
                     {
-                        setError("L'argument de l'option -g doit avoir l'extension .dot");
+                        setError("L'argument de l'option -g doit avoir l'extension .dot.");
                         break;
                     }
                 }
@@ -267,7 +267,7 @@ void CommandReader::displayHelp() const
 
 void CommandReader::displaySyntaxe()
 {
-    cout << "./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG" << endl;
+    cerr << "./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG" << endl;
 }
 
 //------------------------------------------------------- Méthodes privées
