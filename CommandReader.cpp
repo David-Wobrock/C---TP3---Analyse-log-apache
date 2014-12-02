@@ -37,8 +37,11 @@ bool CommandReader::IsGood()
     }
     else
     {
-        cout << errorMessage << endl;
-        displayHelp();
+        if (errorMessage != "")
+        {
+            cout << errorMessage << endl;
+            displaySyntaxe();
+        }
         return isGood; // False
     }
     
@@ -61,13 +64,23 @@ CommandReader::CommandReader (int argc, char** argv)
 #ifdef MAP
     cout << "Appel au constructeur de <CommandReader>" << endl;
 #endif
+    CommandReader::setError("");
     parameters = new map<string, string>;
-    isGood = false;
     
     set<string> optionWithoutArgs = {"-x"};
     bool hasFoundLogFile = false;
     bool hasTriedToFindLogFile = false;
-            
+    
+    for (int i = 1; i < argc; ++i)
+    {
+        if (string(argv[i]) == "-h")
+        {
+            displayHelp();
+            argc = 0;
+            break;
+        }
+    }
+    
     for (int i = 1; i < argc; ++i)
     {
         string arg = string(argv[i]);
@@ -98,7 +111,7 @@ CommandReader::CommandReader (int argc, char** argv)
                 
             isGood = true;
             hasFoundLogFile = true;
-            insertParameters(arg, "");
+            insertParameters("LOG_FILE_NAME", arg);
         }
         // Si l'argument a un tiret
         else
@@ -108,12 +121,16 @@ CommandReader::CommandReader (int argc, char** argv)
             {
                 setError("L'option a besoin d'un nom après le tiret.");
                 break;
-            }
+            } 
             
             // Si c'est une option qui n'a pas besoin d'argument
             if (optionWithoutArgs.find(arg) != optionWithoutArgs.end())
             {
-                insertParameters(arg, "");
+                if (!insertParameters(arg, ""))
+                {
+                    setError("L'argument " + arg + " est présent plus d'une fois.");
+                    break;
+                }
             }
             // Si c'est une option qui a besoin d'un argument
             else
@@ -170,17 +187,20 @@ CommandReader::CommandReader (int argc, char** argv)
                         setError("L'argument de l'option -t n'est pas compris entre 0 et 23.");
                         break;
                     }
-                    
-                    insertParameters(arg, argument);
                 }
                 
-                // ++i pour incrémenter d'abord prendre la valeur à i+1, puis la boucle for réincrémentera pour sauter le traitement de l'argument
-                insertParameters(arg, string(argv[++i]));
+                // Insertion de l'option avec son paramètre. On incrémente ensuite pour sauter l'argument.
+                if (!insertParameters(arg, argument))
+                {
+                    setError("L'argument " + arg + " est présent plus d'une fois.");
+                    break;
+                }
+                i++;
             }
         }
     }
     
-    if (!hasTriedToFindLogFile)
+    if (argc != 0 && !hasTriedToFindLogFile)
     {
         setError("Fichier de log apache manquant.");
     }
@@ -203,9 +223,23 @@ CommandReader::~CommandReader ( )
 //------------------------------------------------------------------ PRIVE
 
 //----------------------------------------------------- Méthodes protégées
+bool CommandReader::insertParameters(string key, string value)
+{
+    // Insert renvoie un itérateur sur un élémont dont la valeur (second) est un booléen
+    // Vrai si une nouvelle paire a été insérée
+    // Faux si la clé est déjà existante
+    return parameters->insert(pair<string, string>(key, value)).second;
+}
+
+void CommandReader::setError(string message)
+{
+    errorMessage = message;
+    isGood = false;
+}
+
 void CommandReader::displayHelp() const
 {
-    cout << "\t***** Aide du programme analog *****" << endl;
+    cout << "\t***** Aide du programme analog *****";
     
     cout << endl << "NOM" << endl;
     cout << "\tanalog - analise un fichier de log apache" << endl;
@@ -231,17 +265,11 @@ void CommandReader::displayHelp() const
     
     cout << endl << "AUTHOR" << endl;
     cout << "\tEcrit par Loïc Touzard et David Wobrock (2014)" << endl;
-} //---- Fin de la méthode displayHelp
+} //---- Fin de la méthode DisplayHelp
 
-void CommandReader::insertParameters(string key, string value)
+void CommandReader::displaySyntaxe()
 {
-    parameters->insert(pair<string, string>(key, value));
-}
-
-void CommandReader::setError(string message)
-{
-    errorMessage = message;
-    isGood = false;
+    cout << "./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG" << endl;
 }
 
 //------------------------------------------------------- Méthodes privées

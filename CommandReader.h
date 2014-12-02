@@ -19,7 +19,9 @@
 
 //------------------------------------------------------------------------ 
 // Rôle de la classe <CommandReader>
-//
+//  Interpréteur de la ligne commande passée avec le programme analog
+//  Affiche les messages d'erreur et la syntaxe si une erreur est détectée 
+//  Affiche la page d'aide (man) si celle-ci est demandée (par l'option -h) 
 //
 //------------------------------------------------------------------------ 
 
@@ -52,7 +54,7 @@ public:
     //  Renseigne un attribut témoignant de la bonne écriture de la ligne de commande, et donc que l'instance est correcte.
     //  Cet attribut peut être consulté avec la méthode IsGood(). Il est fortement recommandé d'appeler cette méthode directement après le constructeur.
     // Contrat :
-    //  
+    //  Les paramètres passés sont ceux qui sont passés à la fonction d'entrée du programme : main()
 
     virtual ~CommandReader ( );
     // Mode d'emploi :
@@ -64,15 +66,10 @@ public:
 
 protected:
 //----------------------------------------------------- Méthodes protégées
-    void displayHelp() const;
+    bool insertParameters(std::string key, std::string value);
     // Mode d'emploi :
-    //  Affiche l'aide (et la syntaxe) de la commande analog.
-    // Contrat :
-    //
-    
-    void insertParameters(std::string key, std::string value);
-    // Mode d'emploi :
-    //  Insert deux chaînes de caractères dans la structure de données de l'interpréteur.
+    //  Insert une paire de chaînes de caractères dans la structure de données de l'interpréteur.
+    //  Renvoie false si l'ajout n'a pas pu être effectué = option déjà présent dans la strucuture.
     // Contrat :
     //
     
@@ -80,6 +77,18 @@ protected:
     // Mode d'emploi :
     //  Met l'interpréteur de ligne de commande dans un état d'erreur.
     //  Met à jour le booléen isGood et le message d'erreur avec le paramètre.
+    // Contrat :
+    //  
+    
+    void displayHelp() const;
+    // Mode d'emploi :
+    //  Affiche l'aide (la page de man) de la commande analog.
+    // Contrat :
+    //
+    
+    void displaySyntaxe();
+    // Mode d'emploi :
+    //  Affiche un rappel de la syntaxe de la commande analog
     // Contrat :
     //  
     
@@ -91,7 +100,7 @@ protected:
     bool isGood; // Renseigne l'état de l'instance
     std::map<std::string, std::string>* parameters; // Les paramètres passés sur la ligne de commande
     
-    std::string errorMessage;
+    std::string errorMessage; // Message d'erreur à afficher
     
 private:
 //------------------------------------------------------- Attributs privés

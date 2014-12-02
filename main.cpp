@@ -15,12 +15,12 @@ int main(int argc, char** argv)
     }
     else
     {
-        return -1; // Fin du programme : mauvais paramètre
+        return -1; // Fin du programme : mauvais paramètre ou aide demandée
     }
     
     cout << "Autre traitement..." << endl;
     
-      
+    
     return 0;
 }
 
