@@ -11,8 +11,10 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <ctime>
-#include <string.h>
+#include <iostream>
 #include <unistd.h>
+
+using namespace std;
 
 //------------------------------------------------------------- Constantes
 
@@ -31,7 +33,7 @@ struct LogLine
 //------------------------------------------------------- Attributs publics
 	// Partie distinctes d'un log, réparties :
 
-	string ll_ipClient;					// Adresse IP du client émmetteur de la requête
+    string ll_ipClient;					// Adresse IP du client émmetteur de la requête
 	string ll_userLog;					// User Logname, le nom d'utilisateur du visiteur
 	string ll_authenticatedUser;		// Authenticated User, nom de l'utilisateur qu'il s'est lui-même donné
 	struct tm ll_timeRequest;			// Représentation en structure tm de la date et heure de la requête

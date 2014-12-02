@@ -10,18 +10,17 @@
 #define APACHELOGFILEPARSER_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include "LogLine.h"
 
-//------------------------------------------------------------- Constantes 
+//------------------------------------------------------------- Constantes
 
-//------------------------------------------------------------------ Types 
+//------------------------------------------------------------------ Types
 
-//------------------------------------------------------------------------ 
+//------------------------------------------------------------------------
 // Rôle de la classe <ApacheLogFileParser>
 //  ApacheLogFileParser peut ouvrir un fichier de log Apache (supposé bien formé)
 //  Le fichier est associé à la classe
 //  Cette classe lit ce fichier et renvoie son contenu ligne par ligne formaté dans un structure LogLine
-//------------------------------------------------------------------------ 
+//------------------------------------------------------------------------
 
 class ApacheLogFileParser
 {
@@ -36,7 +35,7 @@ public:
     //      - false : Il y a eu un problème avec le fichier. Ce problème n'est pas renseigné ici.
 
     bool GetLine(struct LogLine *line);
-    // Mode d'emploi : 
+    // Mode d'emploi :
     //  Lit une ligne du fichier de log.
     //  Remplit la structure LogLine avec son contenu
     //  Le prochain appel a là fonction lira la ligne suivante
@@ -49,7 +48,7 @@ public:
     //  Le pointeur de structure passé en paramètre est supposé non null.
 
     string GetLastError();
-    // Mode d'emploi : 
+    // Mode d'emploi :
     //  Renvoie une string contenant une explication sur la dernière erreur survenue dans la Classe
 
 
@@ -59,29 +58,23 @@ public:
     //  Construit le parser sur le fichier passé en paramètre.
     //  Une ouverture du fichier en lecture est tentée dans le constructeur.
     //  Si une erreur survient le parser se construit mais ne pourra pas lire le fichier, sa methode IsGood() renverra donc false.
-    //  Différentes erreurs sont possible :
-    //      - Si le fichier n'est pas accessible ou lisible
-    //      - Si le fihier ne fini pas par .txt ou .log
-    // L'erreur est renseignée dans la classe et peut être affichée par GetLastError();
+    //  L'erreur est renseignée dans la classe et peut être affichée par GetLastError();
 
     virtual ~ApacheLogFileParser ( );
     // Mode d'emploi :
     //  Détruit la classe et referme le fichier de log potentiellement ouvert
 
-//------------------------------------------------------------------ PRIVE 
+//------------------------------------------------------------------ PRIVE
 
 private:
 //------------------------------------------------------- Méthodes privées
-    void setLastError(string msg);
-    // Mode d'emploi : 
-    //  Met a jour la variable contenant la dernière erreur survenue dans la classe
-    //  Ecrase l'ancienne valeur
 
 protected:
 //----------------------------------------------------- Attributs protégés
     /**** TODO *****/
     string lastError;
     bool good;
+    ifstream logFile;
 };
 
 

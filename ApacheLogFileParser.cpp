@@ -13,6 +13,7 @@
 //-------------------------------------------------------- Include système
 using namespace std;
 #include <iostream>
+#include <fstream>
 
 //------------------------------------------------------ Include personnel
 #include "ApacheLogFileParser.h"
@@ -36,28 +37,74 @@ using namespace std;
 
 bool ApacheLogFileParser::IsGood()
 {
-	return this->good;
+	return good;
 } // ----- Fin de la Méthode IsGood()
 
-bool ApacheLogFileParser::GetLine(struct LogLine)
+bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
 {
+    if(good)
+    {
+        if(structLine != NULL){
+            if(!logFile.eof())
+            {
+                char cLine[1024];
+                if(logFile.getline(cLine, 1024))
+                {
+                    string sLine(cLine);
+                    cout << sLine << endl;
+                }
+                else
+                {
+                    good = false;
+                    lastError = "GetLine : Erreur lors de la lecture de la ligne";
+                    return false;
+                }
+            }
+            else
+            {
+                good = false;
+                lastError = "GetLine : Fin du fichier atteinte";
+                return false;
+            }
 
+        }
+        else
+        {
+            lastError = "GetLine : Pointeur en paramètre = null";
+            return false;
+        }
+    }
+    else
+    {
+        //si bool est a false, le lastError aura déjà été renseigné. Pas besoin de le mettre à jour
+        return false;
+    }
 } // ----- Fin de la Méthode GetLine()
 
 string ApacheLogFileParser::GetLastError()
 {
-	return lastError;
+	return "ERREUR : " + lastError;
 } // ----- Fin de la Méthode GetLastError()
 
 
 //-------------------------------------------- Constructeurs - destructeur
-ApacheLogFileParser::ApacheLogFileParser(string LogFile)
+ApacheLogFileParser::ApacheLogFileParser(string File)
 // Algorithme :
 //
 {
 #ifdef MAP
     cout << "Appel au constructeur de <ApacheLogFileParser>" << endl;
 #endif
+    logFile.open(File);
+    if(logFile.is_open())
+    {
+        good = true;
+    }
+    else
+    {
+        lastError="Constructeur : Ouverture du fichier impossible.";
+        good = false;
+    }
 } //----- Fin de ApacheLogFileParser
 
 
@@ -68,6 +115,10 @@ ApacheLogFileParser::~ApacheLogFileParser( )
 #ifdef MAP
     cout << "Appel au destructeur de <ApacheLogFileParser>" << endl;
 #endif
+    if(logFile.is_open())
+    {
+        logFile.close();
+    }
 } //----- Fin de ~ApacheLogFileParser
 
 
@@ -76,7 +127,3 @@ ApacheLogFileParser::~ApacheLogFileParser( )
 //----------------------------------------------------- Méthodes protégées
 
 //------------------------------------------------------- Méthodes privées
-void ApacheLogFileParser::setLastError(string msg)
-{
-	this->lastError = "ERROR : " + msg;
-}
