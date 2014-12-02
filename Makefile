@@ -1,5 +1,5 @@
 EXE=analog
-INT=CommandReader.h #ApacheLogFileParser.h
+INT=CommandReader.h ApacheLogFileParser.h
 SRC=$(INT:.h=.cpp)
 OBJ=$(INT:.h=.o)
 	
@@ -27,23 +27,20 @@ $(MainOBJ): $(MainSRC) $(INT)
 	
 # ***** TESTS ***** #
 TestTARGET=tests
-TestsSRCDir=./testsSrc/
-TestsEXEDir=./Tests/
+TestsSRCDir=./Unit_Tests/
+TestsEXEDir=$(TestsSRCDir)
 
 TestsSRC=$(TestsSRCDir)TCommandReader.cpp
 TestsOBJ=$(TestsSRC:.cpp=.o)
 
-CommandReaderTestDir=$(TestsEXEDir)Test_CommandReader/
-
-
-TestsEXE=$(CommandReaderTestDir)TCommandReader
+TestsEXE=$(TestsEXEDir)TCommandReader
 
 $(TestTARGET): $(TestsEXE)
 
 # Comp : COMMAND READER test #
-$(CommandReaderTestDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
-	$(ECHO) "Edition des liens de $(CommandReaderTestDir)TCommandReader"
-	$(Linker) -o $(CommandReaderTestDir)TCommandReader $(TestsSRCDir)TCommandReader.o CommandReader.o
+$(TestsEXEDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
+	$(ECHO) "Edition des liens de $(TestsEXEDir)TCommandReader"
+	$(Linker) -o $(TestsEXEDir)TCommandReader $(TestsSRCDir)TCommandReader.o CommandReader.o
 
 $(TestsSRCDir)TCommandReader.o: $(TestsSRCDir)TCommandReader.cpp
 	$(ECHO) "Compilation de $(TestsSRCDir)TCommandReader.cpp"
@@ -54,6 +51,7 @@ $(TestsSRCDir)TCommandReader.o: $(TestsSRCDir)TCommandReader.cpp
 CLEAN=clean
 RM=rm
 RMFlags=-f
+
 .PHONY: $(CLEAN)
 $(CLEAN):
 	$(RM) $(RMFlags) $(EXE) $(OBJ) $(MainOBJ) $(TestsEXE) $(TestsOBJ)

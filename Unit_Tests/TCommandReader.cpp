@@ -5,7 +5,6 @@
 using namespace std;
 
 void Test_IsGood();
-void Test_Fonctionnel();
 void DisplayStringMap(map<string, string>*);
 
 int main(int argc, char** argv)
@@ -38,28 +37,6 @@ void Test_IsGood()
     c.IsGood();
     
     delete [] argv;
-}
-
-void Test_Fonctionnel()
-{
-    char** argv;
-    
-    //cout << "\tTest de la ligne './analog prog.log'" << endl;
-    //cout << "Sortie attendue : [prog.log, ]" << endl;
-    argv = new char*[2];
-    argv[0] = (char*)string("./analog").c_str();
-    argv[1] = (char*)string("prog.log").c_str();
-    
-    cout << argv[0] << endl;
-    cout << argv[1] << endl;
-    
-    CommandReader c1(2, argv);
-    if (c1.IsGood())
-    {
-        DisplayStringMap(c1.GetParameters());
-    }
-    //cout << endl;
-    
 }
 
 void DisplayStringMap(map<string, string>* m)
