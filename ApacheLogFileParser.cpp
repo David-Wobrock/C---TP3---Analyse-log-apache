@@ -52,6 +52,7 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
                 {
                     string sLine(cLine);
                     cout << sLine << endl;
+                    return true;
                 }
                 else
                 {
