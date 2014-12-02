@@ -19,7 +19,7 @@ using namespace std;
 #include <stdlib.h>
 
 //------------------------------------------------------------- Constantes
-
+const string CommandReader::LOG_FILE_NAME_KEY = "LOG_FILE_NAME";
 //---------------------------------------------------- Variables de classe
 
 //----------------------------------------------------------- Types privés
@@ -58,8 +58,6 @@ map<string, string>* CommandReader::GetParameters()
 } //----- Fin de la méthode GetParameters
 
 CommandReader::CommandReader (int argc, char** argv)
-// Algorithme :
-//
 {
 #ifdef MAP
     cout << "Appel au constructeur de <CommandReader>" << endl;
@@ -111,7 +109,7 @@ CommandReader::CommandReader (int argc, char** argv)
                 
             isGood = true;
             hasFoundLogFile = true;
-            insertParameters("LOG_FILE_NAME", arg);
+            insertParameters(CommandReader::LOG_FILE_NAME_KEY, arg);
         }
         // Si l'argument a un tiret
         else

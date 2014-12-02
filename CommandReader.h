@@ -30,6 +30,9 @@ class CommandReader
 //----------------------------------------------------------------- PUBLIC
 
 public:
+//----------------------------------------------------- Constantes statiques publiques
+    static const std::string LOG_FILE_NAME_KEY; // Utilisation CommandReader::LOG_FILE_NAME_KEY
+    
 //----------------------------------------------------- Méthodes publiques
     bool IsGood();
     // Mode d'emploi :

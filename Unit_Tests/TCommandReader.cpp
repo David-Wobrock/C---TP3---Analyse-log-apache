@@ -5,38 +5,25 @@
 using namespace std;
 
 void Test_IsGood();
+void Test_GetParameters();
 void DisplayStringMap(map<string, string>*);
 
-int main(int argc, char** argv)
-{
-    CommandReader c(argc, argv);
-    
-    bool isGood = c.IsGood();
-    
-    if (isGood)
-    {
-        DisplayStringMap(c.GetParameters());
-    }
-    else
-    {
-        cout << "COUCOU3" << endl;
-    }
-    
-    //Test_IsGood();
-    //Test_Fonctionnel();
+int main()
+{    
+    Test_IsGood();
+    Test_GetParameters();
     
     return 0;
 }
 
 void Test_IsGood()
 {
-    char** argv = new char*[1];
-    argv[0] = (char*)string("./analog").c_str();
+   
+}
+
+void Test_GetParameters()
+{
     
-    CommandReader c(1, argv);
-    c.IsGood();
-    
-    delete [] argv;
 }
 
 void DisplayStringMap(map<string, string>* m)
