@@ -14,6 +14,7 @@
 using namespace std;
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 //------------------------------------------------------ Include personnel
 #include "ApacheLogFileParser.h"
@@ -51,7 +52,70 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
                 if(logFile.getline(cLine, 1024))
                 {
                     string sLine(cLine);
-                    cout << sLine << endl;
+                    //test regex ?
+                    size_t deb = 0;
+                    size_t fin = sLine.find(" ");
+                    structLine->ll_ipClient = sLine.substr(deb, fin-deb);
+
+                    deb = fin+1;    //on passe l'espace trouvé
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_userLog = sLine.substr(deb, fin-deb);
+
+                    deb = fin+1;    // on passe l'espace
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_authenticatedUser = sLine.substr(deb, fin-deb);
+
+                    deb = fin+2;    // on passe l'espace et le crochet ouvrant
+                    fin = sLine.find("/", deb);
+                    structLine->ll_timeRequest.tm_mday = atoi(sLine.substr(deb, fin-deb).c_str());
+                    deb = fin+1;
+                    fin = sLine.find("/", deb);
+                    structLine->ll_timeRequest.tm_mon = atoi(sLine.substr(deb, fin-deb).c_str());//OPTI AVEC ENUM
+                    deb = fin+1;
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_timeRequest.tm_year = atoi(sLine.substr(deb, fin-deb).c_str()) - 1900;
+                    deb = fin+2;
+                    fin = sLine.find(":", deb);
+                    structLine->ll_timeRequest.tm_hour = atoi(sLine.substr(deb, fin-deb).c_str());
+                    deb = fin+1;
+                    fin = sLine.find(":", deb);
+                    structLine->ll_timeRequest.tm_min = atoi(sLine.substr(deb, fin-deb).c_str());
+                    deb = fin+1;
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_timeRequest.tm_sec = atoi(sLine.substr(deb, fin-deb).c_str());
+
+                    deb = fin+1;
+                    fin = sLine.find("]", deb);
+                    structLine->ll_timeRequestGMT = sLine.substr(deb, fin-deb);
+
+                    deb = fin+3;    // on passe le crochet fermant, l'espace et les doubles quotes
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_method = sLine.substr(deb, fin-deb);
+
+                    deb = fin+1;    // on passe l'espace
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_url = sLine.substr(deb, fin-deb);
+
+                    deb = fin+1;    // on passe l'espace
+                    fin = sLine.find("\"", deb);
+                    structLine->ll_httpVersion = sLine.substr(deb, fin-deb);
+
+                    deb = fin+2;    // on passe les doubles quotes et l'espace
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_status = atoi(sLine.substr(deb, fin-deb).c_str());
+
+                    deb = fin+1;    // on passe l'espace
+                    fin = sLine.find(" ", deb);
+                    structLine->ll_dataSize = atoi(sLine.substr(deb, fin-deb).c_str());
+
+                    deb = fin+2;    // on passe l'espace et les doubles quotes
+                    fin = sLine.find("\"", deb);
+                    structLine->ll_referer = sLine.substr(deb, fin-deb);
+
+                    deb = fin+3;    // on passe les doubles quotes, l'espace et les doubles quotes
+                    fin = sLine.find("\"", deb);
+                    structLine->ll_browserIdentification = sLine.substr(deb, fin-deb);
+
                     return true;
                 }
                 else

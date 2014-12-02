@@ -37,6 +37,7 @@ struct LogLine
 	string ll_userLog;					// User Logname, le nom d'utilisateur du visiteur
 	string ll_authenticatedUser;		// Authenticated User, nom de l'utilisateur qu'il s'est lui-même donné
 	struct tm ll_timeRequest;			// Représentation en structure tm de la date et heure de la requête
+	string ll_timeRequestGMT;           // GMT de la requete, différence par rapport à l'heure de Greenwich
 	string ll_method;					// Méthode ou type d'action utilisée (GET, POST, OPTIONS, etc.)
 	string ll_url;						// URL du document demandé, cible de notre requête
 	string ll_httpVersion;				// Version HTTP de la requête

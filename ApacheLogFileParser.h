@@ -10,6 +10,10 @@
 #define APACHELOGFILEPARSER_H
 
 //--------------------------------------------------- Interfaces utilisées
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 //------------------------------------------------------------- Constantes
 
