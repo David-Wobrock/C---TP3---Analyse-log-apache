@@ -19,7 +19,7 @@ using namespace std;
 #include <stdlib.h>
 
 //------------------------------------------------------------- Constantes
-const string CommandReader::LOG_FILE_NAME_KEY = "LOG_FILE_NAME";
+const string CommandReader::LOG_FILE_NAME_KEY = "LOG_FILE_NAME"; // Constante de classe
 //---------------------------------------------------- Variables de classe
 
 //----------------------------------------------------------- Types privés
