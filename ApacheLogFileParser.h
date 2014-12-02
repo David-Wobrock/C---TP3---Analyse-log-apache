@@ -32,7 +32,7 @@ public:
     bool IsGood();
     // Mode d'emploi :
     //  Renvoie un booleen pour connaître l'etat du fichier de log
-    //      - true : Le fichier existe, est lisible, ouvert correctement.
+    //      - true : Le fichier existe, est lisible, ouvert correctement. La fonction GetLine()
     //      - false : Il y a eu un problème avec le fichier. Ce problème n'est pas renseigné ici.
 
     bool GetLine(struct LogLine *line);
@@ -72,7 +72,7 @@ public:
 
 private:
 //------------------------------------------------------- Méthodes privées
-    void setLastError(string msg = "ERROR : ");
+    void setLastError(string msg);
     // Mode d'emploi : 
     //  Met a jour la variable contenant la dernière erreur survenue dans la classe
     //  Ecrase l'ancienne valeur
@@ -81,8 +81,7 @@ protected:
 //----------------------------------------------------- Attributs protégés
     /**** TODO *****/
     string lastError;
-
-
+    bool good;
 };
 
 
