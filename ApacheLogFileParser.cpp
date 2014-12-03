@@ -1,16 +1,16 @@
 /*************************************************************************
                            ApacheLogFileParser  -  Description
                              -------------------
-    dÈbut                : 29/11/2014
-    copyright            : (C) 2014 par LoÔc Touzard et David Wobrock
+    d√©but                : 29/11/2014
+    copyright            : (C) 2014 par Lo√Øc Touzard et David Wobrock
 *************************************************************************/
 
-//---------- RÈalisation de la classe <ApacheLogFileParser> (fichier ApacheLogFileParser.cpp) --
+//---------- R√©alisation de la classe <ApacheLogFileParser> (fichier ApacheLogFileParser.cpp) --
 
 //---------------------------------------------------------------- INCLUDE
 #include "LogLine.h"
 
-//-------------------------------------------------------- Include systËme
+//-------------------------------------------------------- Include syst√®me
 using namespace std;
 #include <iostream>
 #include <fstream>
@@ -23,23 +23,17 @@ using namespace std;
 
 //---------------------------------------------------- Variables de classe
 
-//----------------------------------------------------------- Types privÈs
+//----------------------------------------------------------- Types priv√©s
 
 
 //----------------------------------------------------------------- PUBLIC
 //-------------------------------------------------------- Fonctions amies
 
-//----------------------------------------------------- MÈthodes publiques
-// type ${file_base}::MÈthode ( liste de paramËtres )
-// Algorithme :
-//
-//{
-//} //----- Fin de MÈthode
-
+//----------------------------------------------------- M√©thodes publiques
 bool ApacheLogFileParser::IsGood()
 {
 	return good;
-} // ----- Fin de la MÈthode IsGood()
+} // ----- Fin de la M√©thode IsGood()
 
 bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
 {
@@ -57,7 +51,7 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
                     size_t fin = sLine.find(" ");
                     structLine->ll_ipClient = sLine.substr(deb, fin-deb);
 
-                    deb = fin+1;    //on passe l'espace trouvÈ
+                    deb = fin+1;    //on passe l'espace trouv√©
                     fin = sLine.find(" ", deb);
                     structLine->ll_userLog = sLine.substr(deb, fin-deb);
 
@@ -135,21 +129,21 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
         }
         else
         {
-            lastError = "GetLine : Pointeur en paramËtre = null";
+            lastError = "GetLine : Pointeur en param√®tre = null";
             return false;
         }
     }
     else
     {
-        //si bool est a false, le lastError aura dÈj‡ ÈtÈ renseignÈ. Pas besoin de le mettre ‡ jour
+        //si bool est a false, le lastError aura d√©j√† √©t√© renseign√©. Pas besoin de le mettre √† jour
         return false;
     }
-} // ----- Fin de la MÈthode GetLine()
+} // ----- Fin de la M√©thode GetLine()
 
 string ApacheLogFileParser::GetLastError()
 {
 	return "ERREUR : " + lastError;
-} // ----- Fin de la MÈthode GetLastError()
+} // ----- Fin de la M√©thode GetLastError()
 
 
 //-------------------------------------------- Constructeurs - destructeur
@@ -174,8 +168,6 @@ ApacheLogFileParser::ApacheLogFileParser(string File)
 
 
 ApacheLogFileParser::~ApacheLogFileParser( )
-// Algorithme :
-//
 {
 #ifdef MAP
     cout << "Appel au destructeur de <ApacheLogFileParser>" << endl;
@@ -189,6 +181,6 @@ ApacheLogFileParser::~ApacheLogFileParser( )
 
 //------------------------------------------------------------------ PRIVE
 
-//----------------------------------------------------- MÈthodes protÈgÈes
+//----------------------------------------------------- M√©thodes prot√©g√©es
 
-//------------------------------------------------------- MÈthodes privÈes
+//------------------------------------------------------- M√©thodes priv√©es
