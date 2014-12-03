@@ -51,6 +51,7 @@ public:
     // Contrat :
     //  
     
+//-------------------------------------------- Constructeurs - destructeur
     CommandReader (int argc, char** argv);
     // Mode d'emploi :
     //  Construit un objet de lecture de la ligne de commande.
@@ -58,7 +59,8 @@ public:
     //  Cet attribut peut être consulté avec la méthode IsGood(). Il est fortement recommandé d'appeler cette méthode directement après le constructeur.
     // Contrat :
     //  Les paramètres passés sont ceux qui sont passés à la fonction d'entrée du programme : main()
-
+    //  argc correspond don on nombre d'arguments de argv
+    
     virtual ~CommandReader ( );
     // Mode d'emploi :
     //  Détruit proprement l'instance de CommandReader.
@@ -82,6 +84,20 @@ protected:
     //  Met à jour le booléen isGood et le message d'erreur avec le paramètre.
     // Contrat :
     //  
+    
+    bool argContains(int argc, char** argv, std::string searchedArg);
+    // Mode d'emploi :
+    //  Renvoie vrai si l'argument recherché (searchedArg) est contenu dans les arguments argv
+    // Contrat :
+    //  argc est le nombre de chaînes de caractères présentes dans argv
+    
+    void analyzeCommand(int argc, char** argv);
+    // Mode d'emploi :
+    //  Analyse la ligne de commande passé.
+    //  Remplit le message d'erreur et le booléen isGood si une erreur est présente.
+    //  Remplit la map contenant les options et arguments si la ligne est bien formée.
+    // Contrat :
+    //  argc correspond au nombre d'arguments contenu dans argv
     
     void displayHelp() const;
     // Mode d'emploi :

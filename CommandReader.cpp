@@ -57,151 +57,26 @@ map<string, string>* CommandReader::GetParameters()
     return parameters;
 } //----- Fin de la méthode GetParameters
 
+//-------------------------------------------- Constructeurs - destructeur
 CommandReader::CommandReader (int argc, char** argv)
 {
 #ifdef MAP
     cout << "Appel au constructeur de <CommandReader>" << endl;
 #endif
+    // Initialisation des attributs
     CommandReader::setError("");
     parameters = new map<string, string>;
     
-    set<string> optionWithoutArgs = {"-x"};
-    bool hasFoundLogFile = false;
-    bool hasTriedToFindLogFile = false;
-    
-    for (int i = 1; i < argc; ++i)
+    // Si les arguments contiennent -h, on affiche l'aide et on ne fait rien d'autre.
+    if (argContains(argc, argv, "-h"))
     {
-        if (string(argv[i]) == "-h")
-        {
-            displayHelp();
-            argc = 0;
-            break;
-        }
+        displayHelp();
     }
-    
-    for (int i = 1; i < argc; ++i)
+    // Sinon on analyse la ligne de commande
+    else
     {
-        string arg = string(argv[i]);
-        
-        // Si l'argument ne commence pas par un tiret, c'est le nom du fichier de log
-        if (arg[0] != '-')
-        {
-            hasTriedToFindLogFile = true;
-            
-            if (hasFoundLogFile)
-            {
-                setError("Plus d'un fichier de log apache a été détecté.");
-                break;
-            }
-            // Le nom du fichier doit au moins faire 5 (a.log par exemple)
-            if (arg.size() < 5)
-            {
-                setError("Le nom du fichier log apache est trop court.");
-                break;  
-            }
-            // Vérification de l'extension (.txt ou .log)
-            string argExtension = arg.substr(arg.size()-4, arg.size());
-            if (argExtension != ".txt" && argExtension != ".log")
-            {
-                setError("L'extension du fichier de log apache est invalide.");
-                break;
-            }
-                
-            isGood = true;
-            hasFoundLogFile = true;
-            insertParameters(CommandReader::LOG_FILE_NAME_KEY, arg);
-        }
-        // Si l'argument a un tiret
-        else
-        {
-            // S'il n'y que un tiret
-            if (arg.size() < 2)
-            {
-                setError("L'option a besoin d'un nom après le tiret.");
-                break;
-            } 
-            
-            // Si c'est une option qui n'a pas besoin d'argument
-            if (optionWithoutArgs.find(arg) != optionWithoutArgs.end())
-            {
-                if (!insertParameters(arg, ""))
-                {
-                    setError("L'argument " + arg + " est présent plus d'une fois.");
-                    break;
-                }
-            }
-            // Si c'est une option qui a besoin d'un argument
-            else
-            {
-                // S'il n'y a pas d'argument après (si c'est le dernier, ou celui ou le suivant commence par -)
-                if (i+1 >= argc || argv[i+1][0] == '-')
-                {
-                    setError("Il manque l'argument après " + arg + ".");
-                    break;
-                }
-                
-                string argument = argv[i+1];
-                
-                // Cas spéciaux pour l'option -g
-                if (arg == "-g")
-                {
-                    // Si l'argument est trop court
-                    if (argument.size() < 5)
-                    {
-                        setError("L'argument de l'option -g est trop court.");
-                        break;
-                    }
-                    // Si l'extension est invalide (.dot)
-                    if (argument.substr(argument.size()-4, argument.size()) != ".dot")
-                    {
-                        setError("L'argument de l'option -g doit avoir l'extension .dot.");
-                        break;
-                    }
-                }
-                
-                // Cas spéciaux pour l'option -t
-                if (arg == "-t")
-                {
-                    bool argIsDigit = true;
-                    for (unsigned int i = 0; i < argument.size(); ++i)
-                    {
-                        if (!isdigit(argument[i]))
-                        {
-                            setError("L'argument de l'option -t n'est pas un entier.");
-                            argIsDigit = false;
-                            break;
-                        }
-                    }
-                    
-                    if (!argIsDigit)
-                    {
-                        break;
-                    }
-                    
-                    int intArg = atoi(argument.c_str());
-                    
-                    if (intArg < 0 || 23 < intArg)
-                    {
-                        setError("L'argument de l'option -t n'est pas compris entre 0 et 23.");
-                        break;
-                    }
-                }
-                
-                // Insertion de l'option avec son paramètre. On incrémente ensuite pour sauter l'argument.
-                if (!insertParameters(arg, argument))
-                {
-                    setError("L'argument " + arg + " est présent plus d'une fois.");
-                    break;
-                }
-                i++;
-            }
-        }
-    }
-    
-    if (argc != 0 && !hasTriedToFindLogFile)
-    {
-        setError("Fichier de log apache manquant.");
-    }
+        analyzeCommand(argc, argv);
+    }  
 } //----- Fin de CommandReader
 
 
@@ -233,6 +108,150 @@ void CommandReader::setError(string message)
 {
     errorMessage = message;
     isGood = false;
+}
+
+bool CommandReader::argContains(int argc, char** argv, string searchedArg)
+{
+    for (int i = 1; i < argc; ++i)
+    {
+        if (string(argv[i]) == searchedArg)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+void CommandReader::analyzeCommand(int argc, char** argv)
+{
+    set<string> optionWithoutArgs = {"-x"};
+    bool hasFoundLogFile = false;
+    bool hasTriedToFindLogFile = false;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        string arg = string(argv[i]);
+
+        // Si l'argument ne commence pas par un tiret, c'est le nom du fichier de log
+        if (arg[0] != '-')
+        {
+            hasTriedToFindLogFile = true;
+
+            if (hasFoundLogFile)
+            {
+                setError("Plus d'un fichier de log apache a été détecté.");
+                break;
+            }
+            // Le nom du fichier doit au moins faire 5 (a.log par exemple)
+            if (arg.size() < 5)
+            {
+                setError("Le nom du fichier log apache est trop court.");
+                break;  
+            }
+            // Vérification de l'extension (.txt ou .log)
+            string argExtension = arg.substr(arg.size()-4, arg.size());
+            if (argExtension != ".txt" && argExtension != ".log")
+            {
+                setError("L'extension du fichier de log apache est invalide.");
+                break;
+            }
+
+            isGood = true;
+            hasFoundLogFile = true;
+            insertParameters(CommandReader::LOG_FILE_NAME_KEY, arg);
+        }
+        // Si l'argument a un tiret
+        else
+        {
+            // S'il n'y que un tiret
+            if (arg.size() < 2)
+            {
+                setError("L'option a besoin d'un nom après le tiret.");
+                break;
+            } 
+
+            // Si c'est une option qui n'a pas besoin d'argument
+            if (optionWithoutArgs.find(arg) != optionWithoutArgs.end())
+            {
+                if (!insertParameters(arg, ""))
+                {
+                    setError("L'argument " + arg + " est présent plus d'une fois.");
+                    break;
+                }
+            }
+            // Si c'est une option qui a besoin d'un argument
+            else
+            {
+                // S'il n'y a pas d'argument après (si c'est le dernier, ou celui ou le suivant commence par -)
+                if (i+1 >= argc || argv[i+1][0] == '-')
+                {
+                    setError("Il manque l'argument après " + arg + ".");
+                    break;
+                }
+
+                string argument = argv[i+1];
+
+                // Cas spéciaux pour l'option -g
+                if (arg == "-g")
+                {
+                    // Si l'argument est trop court
+                    if (argument.size() < 5)
+                    {
+                        setError("L'argument de l'option -g est trop court.");
+                        break;
+                    }
+                    // Si l'extension est invalide (.dot)
+                    if (argument.substr(argument.size()-4, argument.size()) != ".dot")
+                    {
+                        setError("L'argument de l'option -g doit avoir l'extension .dot.");
+                        break;
+                    }
+                }
+
+                // Cas spéciaux pour l'option -t
+                if (arg == "-t")
+                {
+                    bool argIsDigit = true;
+                    for (unsigned int i = 0; i < argument.size(); ++i)
+                    {
+                        if (!isdigit(argument[i]))
+                        {
+                            setError("L'argument de l'option -t n'est pas un entier.");
+                            argIsDigit = false;
+                            break;
+                        }
+                    }
+
+                    if (!argIsDigit)
+                    {
+                        break;
+                    }
+
+                    int intArg = atoi(argument.c_str());
+
+                    if (intArg < 0 || 23 < intArg)
+                    {
+                        setError("L'argument de l'option -t n'est pas compris entre 0 et 23.");
+                        break;
+                    }
+                }
+
+                // Insertion de l'option avec son paramètre. On incrémente ensuite pour sauter l'argument.
+                if (!insertParameters(arg, argument))
+                {
+                    setError("L'argument " + arg + " est présent plus d'une fois.");
+                    break;
+                }
+                i++;
+            }
+        }
+    }
+
+    if (!hasTriedToFindLogFile)
+    {
+        setError("Fichier de log apache manquant.");
+    }
 }
 
 void CommandReader::displayHelp() const
