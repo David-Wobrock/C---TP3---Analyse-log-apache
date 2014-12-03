@@ -20,9 +20,7 @@ int main(int argc, char** argv)
         return -1; // Fin du programme : mauvais paramètre ou aide demandée
     }
 
-    cout << "Autre traitement..." << endl;
-
-    cout << parameters->find("LOG_FILE_NAME")->second << endl;
+    cout << parameters->find(CommandReader::LOG_FILE_NAME_KEY)->second << endl;
 
     ApacheLogFileParser apacheParser(parameters->find("LOG_FILE_NAME")->second);
 
