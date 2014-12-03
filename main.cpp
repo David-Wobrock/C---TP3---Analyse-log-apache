@@ -33,8 +33,10 @@ int main(int argc, char** argv)
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
 
+    int cpt = 0;
     while(apacheParser.GetLine(ptLogLine))
     {
+        cpt++;
         //pour chaque ligne du fichier
         /*
         cout << "|" << ptLogLine->ll_ipClient << "|" << endl;
@@ -51,7 +53,7 @@ int main(int argc, char** argv)
         */
     }
     //cout << apacheParser.GetLastError() << endl;
-
+    cout << "Nb lignes : " << cpt << endl;
 
     return 0;
 }

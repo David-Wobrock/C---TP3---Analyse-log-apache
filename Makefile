@@ -37,7 +37,7 @@ TestsEXE=$(TestsEXEDir)TCommandReader
 
 $(TestTARGET): $(TestsEXE)
 
-# Comp : COMMAND READER test #
+# Compilation : COMMAND READER test #
 $(TestsEXEDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
 	$(ECHO) "Edition des liens de $(TestsEXEDir)TCommandReader"
 	$(Linker) -o $(TestsEXEDir)TCommandReader $(TestsSRCDir)TCommandReader.o CommandReader.o
