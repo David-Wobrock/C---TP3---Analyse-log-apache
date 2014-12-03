@@ -34,7 +34,7 @@ public:
     static const std::string LOG_FILE_NAME_KEY; // Utilisation CommandReader::LOG_FILE_NAME_KEY
     
 //----------------------------------------------------- Méthodes publiques
-    bool IsGood();
+    bool IsGood() const;
     // Mode d'emploi :
     //  Renvoie VRAI si les arguments passés en paramètres sont corrects.
     //  Si le retour est FAUX, GetParameters() renverra un pointeur nul.
@@ -52,7 +52,7 @@ public:
     //  
     
 //-------------------------------------------- Constructeurs - destructeur
-    CommandReader (int argc, char** argv);
+    CommandReader (const int argc, char** const argv);
     // Mode d'emploi :
     //  Construit un objet de lecture de la ligne de commande.
     //  Renseigne un attribut témoignant de la bonne écriture de la ligne de commande, et donc que l'instance est correcte.
@@ -71,27 +71,27 @@ public:
 
 protected:
 //----------------------------------------------------- Méthodes protégées
-    bool insertParameters(std::string key, std::string value);
+    bool insertParameters(const std::string key, const std::string value);
     // Mode d'emploi :
     //  Insert une paire de chaînes de caractères dans la structure de données de l'interpréteur.
     //  Renvoie false si l'ajout n'a pas pu être effectué = option déjà présent dans la strucuture.
     // Contrat :
     //
     
-    void setError(std::string message);
+    void setError(const std::string message);
     // Mode d'emploi :
     //  Met l'interpréteur de ligne de commande dans un état d'erreur.
     //  Met à jour le booléen isGood et le message d'erreur avec le paramètre.
     // Contrat :
     //  
     
-    bool argContains(int argc, char** argv, std::string searchedArg);
+    bool argContains(const int argc, char** const argv, const std::string searchedArg);
     // Mode d'emploi :
     //  Renvoie vrai si l'argument recherché (searchedArg) est contenu dans les arguments argv
     // Contrat :
     //  argc est le nombre de chaînes de caractères présentes dans argv
     
-    void analyzeCommand(int argc, char** argv);
+    void analyzeCommand(const int argc, char** const argv);
     // Mode d'emploi :
     //  Analyse la ligne de commande passé.
     //  Remplit le message d'erreur et le booléen isGood si une erreur est présente.
@@ -105,7 +105,7 @@ protected:
     // Contrat :
     //
     
-    void displaySyntaxe();
+    void displaySyntaxe() const;
     // Mode d'emploi :
     //  Affiche un rappel de la syntaxe de la commande analog
     // Contrat :

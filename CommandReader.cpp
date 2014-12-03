@@ -29,7 +29,7 @@ const string CommandReader::LOG_FILE_NAME_KEY = "LOG_FILE_NAME"; // Constante de
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
-bool CommandReader::IsGood()
+bool CommandReader::IsGood() const
 {
     if (isGood)
     {
@@ -58,7 +58,7 @@ map<string, string>* CommandReader::GetParameters()
 } //----- Fin de la méthode GetParameters
 
 //-------------------------------------------- Constructeurs - destructeur
-CommandReader::CommandReader (int argc, char** argv)
+CommandReader::CommandReader (const int argc, char** const argv)
 {
 #ifdef MAP
     cout << "Appel au constructeur de <CommandReader>" << endl;
@@ -96,7 +96,7 @@ CommandReader::~CommandReader ( )
 //------------------------------------------------------------------ PRIVE
 
 //----------------------------------------------------- Méthodes protégées
-bool CommandReader::insertParameters(string key, string value)
+bool CommandReader::insertParameters(const string key, const string value)
 {
     // Insert renvoie un itérateur sur un élémont dont la valeur (second) est un booléen
     // Vrai si une nouvelle paire a été insérée
@@ -104,13 +104,13 @@ bool CommandReader::insertParameters(string key, string value)
     return parameters->insert(pair<string, string>(key, value)).second;
 }
 
-void CommandReader::setError(string message)
+void CommandReader::setError(const string message)
 {
     errorMessage = message;
     isGood = false;
 }
 
-bool CommandReader::argContains(int argc, char** argv, string searchedArg)
+bool CommandReader::argContains(const int argc, char** const argv, const string searchedArg)
 {
     for (int i = 1; i < argc; ++i)
     {
@@ -123,7 +123,7 @@ bool CommandReader::argContains(int argc, char** argv, string searchedArg)
     return false;
 }
 
-void CommandReader::analyzeCommand(int argc, char** argv)
+void CommandReader::analyzeCommand(const int argc, char** const argv)
 {
     set<string> optionWithoutArgs = {"-x"};
     bool hasFoundLogFile = false;
@@ -284,7 +284,7 @@ void CommandReader::displayHelp() const
     cout << "\tEcrit par Loïc Touzard et David Wobrock (2014)" << endl;
 } //---- Fin de la méthode DisplayHelp
 
-void CommandReader::displaySyntaxe()
+void CommandReader::displaySyntaxe() const
 {
     cerr << "./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG" << endl;
 }
