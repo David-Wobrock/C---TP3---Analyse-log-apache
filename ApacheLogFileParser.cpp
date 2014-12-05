@@ -15,13 +15,27 @@ using namespace std;
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-
+#include <map>
 //------------------------------------------------------ Include personnel
 #include "ApacheLogFileParser.h"
 
 //------------------------------------------------------------- Constantes
 
 //---------------------------------------------------- Variables de classe
+map<string, int> ApacheLogFileParser::months = {
+  {"Jan", 0},
+  {"Feb", 1},
+  {"Mar", 2},
+  {"Apr", 3},
+  {"May", 4},
+  {"Jun", 5},
+  {"Jul", 6},
+  {"Aug", 7},
+  {"Sep", 8},
+  {"Oct", 9},
+  {"Nov", 10},
+  {"Dec", 11},
+};
 
 //----------------------------------------------------------- Types privés
 
@@ -47,14 +61,15 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
                 {
                     string sLine(cLine);
                     //test regex ?
+                    // IP Client
                     size_t deb = 0;
                     size_t fin = sLine.find(" ");
                     structLine->ll_ipClient = sLine.substr(deb, fin-deb);
-
+                    // Userlog
                     deb = fin+1;    //on passe l'espace trouvé
                     fin = sLine.find(" ", deb);
                     structLine->ll_userLog = sLine.substr(deb, fin-deb);
-
+                    // AuthenticatedUser
                     deb = fin+1;    // on passe l'espace
                     fin = sLine.find(" ", deb);
                     structLine->ll_authenticatedUser = sLine.substr(deb, fin-deb);
@@ -64,11 +79,11 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
                     structLine->ll_timeRequest.tm_mday = atoi(sLine.substr(deb, fin-deb).c_str());
                     deb = fin+1;
                     fin = sLine.find("/", deb);
-                    structLine->ll_timeRequest.tm_mon = atoi(sLine.substr(deb, fin-deb).c_str());//OPTI AVEC ENUM
+                    structLine->ll_timeRequest.tm_mon = months[sLine.substr(deb, fin-deb)];
                     deb = fin+1;
-                    fin = sLine.find(" ", deb);
+                    fin = sLine.find(":", deb);
                     structLine->ll_timeRequest.tm_year = atoi(sLine.substr(deb, fin-deb).c_str()) - 1900;
-                    deb = fin+2;
+                    deb = fin+1;
                     fin = sLine.find(":", deb);
                     structLine->ll_timeRequest.tm_hour = atoi(sLine.substr(deb, fin-deb).c_str());
                     deb = fin+1;

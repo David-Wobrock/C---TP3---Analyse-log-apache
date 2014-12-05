@@ -12,6 +12,7 @@
 //--------------------------------------------------- Interfaces utilisées
 #include <iostream>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -75,10 +76,10 @@ private:
 
 protected:
 //----------------------------------------------------- Attributs protégés
-    /**** TODO *****/
     string lastError;
     bool good;
     ifstream logFile;
+    static map<string, int> months;
 };
 
 
