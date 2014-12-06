@@ -10,15 +10,11 @@
 #define GRAPHSTRING_H
 
 //--------------------------------------------------- Interfaces utilisées
-#include <map>
 
-using namespace std;
 //------------------------------------------------------------- Constantes
 
 //------------------------------------------------------------------ Types
-typedef map<string, int> Inner_map; //map interne, contenant la cible et son nombre de liens
-typedef pair<Inner_map, int> Inner_pair;
-typedef map<string, Inner_pair> Outer_map;
+
 
 //------------------------------------------------------------------------
 // Rôle de la classe <GraphString>
@@ -27,7 +23,6 @@ typedef map<string, Inner_pair> Outer_map;
 //------------------------------------------------------------------------
 
 class GraphString
-{
 //----------------------------------------------------------------- PUBLIC
 
 public:
@@ -37,43 +32,14 @@ public:
     //
     // Contrat :
     //
-    typedef Outer_map::iterator Outer_iterator;
-    typedef Outer_map::const_iterator Outer_cIterator;
-    typedef Inner_map::iterator Inner_iterator;
-    typedef Inner_map::const_iterator Inner_cIterator;
-
-    Outer_iterator Outer_begin() { return graph.begin(); }
-
-    Outer_iterator Outer_end() { return graph.end(); }
-
-    Inner_iterator Inner_begin(string k) { return graph[k].first.begin(); }
-
-    Inner_iterator Inner_end(string k) { return graph[k].first.end(); }
-
-    void Insert(string referer, string target);
-    // Mode d'emploi :
-    //  Ajoute un lien dans le graph, partant du referer vers la target
-
-    int GetLinks(string referer, string target);
-    // Mode d'emploi :
-    //  renvoie le nombre de lien du graph allant du referrer à la targer
-
-    int GetAllLinks(string target);
-    // Mode d'emploi :
-    //  renvoie le nombre total de liens allant vers la target donnée
-
-    int Size();
-
-    void Display();
-
 
 
 //------------------------------------------------- Surcharge d'opérateurs
-//    GraphString & operator = ( const GraphString & unGraphString );
-//    // Mode d'emploi :
-//    //
-//    // Contrat :
-//    //
+    GraphString & operator = ( const GraphString & unGraphString );
+    // Mode d'emploi :
+    //
+    // Contrat :
+    //
 
 
 //-------------------------------------------- Constructeurs - destructeur
@@ -105,8 +71,6 @@ private:
 
 protected:
 //----------------------------------------------------- Attributs protégées
-
-Outer_map graph;
 private:
 //------------------------------------------------------- Attributs privés
 
