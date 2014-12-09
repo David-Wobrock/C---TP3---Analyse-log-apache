@@ -41,7 +41,6 @@ void GraphString::Insert(string referer, string target)
 {
     if(graph.find(target) != graph.end())
     {
-        cout << "OUI" << endl;
         // la clé existe
         Inner_pair* currentPair = &graph[target];
         Inner_map* currentInnerMap = &currentPair->first;
@@ -61,7 +60,6 @@ void GraphString::Insert(string referer, string target)
     else
     {
         //la clé n'existe pas, on la créée
-        cout << "NON" << endl;
         Inner_map newMap;
         newMap[referer] = 1;
         Inner_pair newPair(newMap, 1);
