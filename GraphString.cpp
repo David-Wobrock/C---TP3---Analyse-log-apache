@@ -114,7 +114,7 @@ void GraphString::CreateGraphVizFile(string fileName)
     }
     
     // 2) Ecriture du début du fichier
-    graphFileStream << "digraphe {" << endl;
+    graphFileStream << "digraph {" << endl;
     
     // 3) Ecriture du graphe
     Outer_cIterator outerIt;
@@ -129,6 +129,11 @@ void GraphString::CreateGraphVizFile(string fileName)
         {
             // First : referer string
             // Second : links
+            graphFileStream << "\"" << outerIt->first << "\" ";
+            graphFileStream <<"->";
+            graphFileStream << " \"" << innerIt->first << "\" ";
+            graphFileStream << "[label=\"" << innerIt->second << "\"];" << endl;
+            
         }
     }
     

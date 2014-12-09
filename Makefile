@@ -30,7 +30,7 @@ TestTARGET=tests
 TestsSRCDir=./Unit_Tests/
 TestsEXEDir=$(TestsSRCDir)
 
-TestsSRC=$(TestsSRCDir)TCommandReader.cpp TGraphString.cpp
+TestsSRC=$(TestsSRCDir)TCommandReader.cpp $(TestsSRCDir)TGraphString.cpp
 TestsOBJ=$(TestsSRC:.cpp=.o)
 
 TestsEXE=$(TestsEXEDir)TCommandReader $(TestsEXEDir)TGraphString

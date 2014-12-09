@@ -47,5 +47,5 @@ void Test_CreateGraphVizFile()
     g.Insert("/page2.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page1.html");
     
     g.CreateGraphVizFile("Unit_Tests/court.dot");
-    system("dot -Tpng Unit_Tests/court.png Unit_Tests/court.dot");
+    system("dot -Tpng -o Unit_Tests/court.png Unit_Tests/court.dot");
 }
