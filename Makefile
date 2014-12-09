@@ -30,10 +30,10 @@ TestTARGET=tests
 TestsSRCDir=./Unit_Tests/
 TestsEXEDir=$(TestsSRCDir)
 
-TestsSRC=$(TestsSRCDir)TCommandReader.cpp
+TestsSRC=$(TestsSRCDir)TCommandReader.cpp TGraphString.cpp
 TestsOBJ=$(TestsSRC:.cpp=.o)
 
-TestsEXE=$(TestsEXEDir)TCommandReader
+TestsEXE=$(TestsEXEDir)TCommandReader $(TestsEXEDir)TGraphString
 
 $(TestTARGET): $(TestsEXE)
 
@@ -45,7 +45,15 @@ $(TestsEXEDir)TCommandReader: $(TestsSRCDir)TCommandReader.o CommandReader.o
 $(TestsSRCDir)TCommandReader.o: $(TestsSRCDir)TCommandReader.cpp
 	$(ECHO) "Compilation de $(TestsSRCDir)TCommandReader.cpp"
 	$(Compilator) -o $(TestsSRCDir)TCommandReader.o -c $(TestsSRCDir)TCommandReader.cpp $(CompilationsOptions)
-	
+
+# Compilation : GRAPH STRING test #
+$(TestsEXEDir)TGraphString: $(TestsSRCDir)TGraphString.o GraphString.o
+	$(ECHO) "Edition des liens de $(TestsEXEDir)TGraphString"
+	$(Linker) -o $(TestsEXEDir)TGraphString $(TestsSRCDir)TGraphString.o GraphString.o
+
+$(TestsSRCDir)TGraphString.o: $(TestsSRCDir)TGraphString.cpp
+	$(ECHO) "Compilation de $(TestsSRCDir)TGraphString.cpp"
+	$(Compilator) -o $(TestsSRCDir)TGraphString.o -c $(TestsSRCDir)TGraphString.cpp $(CompilationsOptions)
 	
 # ***** CLEAN ***** #
 CLEAN=clean

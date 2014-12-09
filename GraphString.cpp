@@ -120,12 +120,12 @@ void GraphString::CreateGraphVizFile(string fileName)
     Outer_cIterator outerIt;
     Outer_cIterator itOuterEnd = Outer_end();
     Inner_cIterator innerIt;
-    Inner_cIterator itInnerEnd = Inner_end();
     for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
     {
         // First : target string
         // Second : pair<map, int>
-        for (innerIt = Inner_begin(); innerIt != itInnerEnd; ++innerIt)
+        Inner_cIterator itInnerEnd = outerIt->second.first.end();
+        for (innerIt = outerIt->second.first.begin(); innerIt != itInnerEnd; ++innerIt)
         {
             // First : referer string
             // Second : links
