@@ -58,10 +58,6 @@ int main(int argc, char** argv)
 //        cout << "|" << ptLogLine->ll_referer << "|" << endl;
 //        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
         graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
-        graph.Insert("autreReFEreR", ptLogLine->ll_url);
-        graph.Insert("Encore Autre referer", ptLogLine->ll_url);
-        cout << "liens entre : " << ptLogLine->ll_referer << " et " << ptLogLine->ll_url << " : " << graph.GetLinks(ptLogLine->ll_referer, ptLogLine->ll_url) << endl;
-        cout << "liens totaux allant a : " << ptLogLine->ll_url << " : " << graph.GetAllLinks(ptLogLine->ll_url) << endl;
     }
 //    cout << apacheParser.GetLastError() << endl;
     //graph.Display();
