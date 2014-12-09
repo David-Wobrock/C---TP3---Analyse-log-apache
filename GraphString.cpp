@@ -136,7 +136,8 @@ void GraphString::CreateGraphVizFile(string fileName)
     graphFileStream << "}" << endl;
     // 5) Fermeture du flux
     graphFileStream.close();
-
+    cout << "Dot-file " << fileName << " generated" << endl;
+    
 } // Fin de la méthode CreateGraphVizFile
 
 //------------------------------------------------- Surcharge d'opérateurs
