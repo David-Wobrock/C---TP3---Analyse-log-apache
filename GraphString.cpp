@@ -143,7 +143,52 @@ void GraphString::CreateGraphVizFile(string fileName)
     graphFileStream.close();
     cout << "Dot-file " << fileName << " generated" << endl;
     
-} // Fin de la méthode CreateGraphVizFile
+} // ----- Fin de la méthode CreateGraphVizFile
+
+multimap<int, string, greater<int>> GraphString::GetMostVisited(int numberOfLinks)
+{
+    // Fonction de comparaison pour ordre décroissant
+    multimap<int, string, greater<int>> mostVisitedLinks;
+    int lowestValue = 0;
+    
+    Outer_cIterator outerIt;
+    Outer_cIterator itOuterEnd = Outer_end();
+    for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
+    {
+        if (outerIt->second.second >= lowestValue)
+        {
+            if (mostVisitedLinks.size() > numberOfLinks)
+            {
+                // On trouve le lien avec le moins de visite
+                bool hasIterated = false;
+                multimap<int, string, greater<int>>::const_iterator it, lowestPair;
+                multimap<int, string, greater<int>>::const_iterator itEnd = mostVisitedLinks.end();
+                for(it = mostVisitedLinks.begin(); it != itEnd; ++it)
+                {
+                    if (!hasIterated || it->first < lowestPair->first)
+                    {
+                        hasIterated = true;
+                        lowestPair = it;
+                    }
+                }
+                // Suppresion de l'élément
+                mostVisitedLinks.erase(lowestPair);
+            }
+            // Ajout du nouveau lien
+            mostVisitedLinks.insert(pair<int, string>(outerIt->second.second, outerIt->first));
+            
+            // Update lowest value
+            multimap<int, string, greater<int>>::const_iterator it;
+            multimap<int, string, greater<int>>::const_iterator itEnd = mostVisitedLinks.end();
+            for(it = mostVisitedLinks.begin(); it != itEnd; ++it)
+            {
+                lowestValue = ((it->first < lowestValue) ? it->first : lowestValue);  
+            }
+        }
+    }
+    
+    return mostVisitedLinks;
+} // ----- Fin de la méthode GetMostVisited
 
 //------------------------------------------------- Surcharge d'opérateurs
 
