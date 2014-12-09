@@ -32,11 +32,6 @@ class GraphString
 
 public:
 //----------------------------------------------------- Méthodes publiques
-    // type Méthode ( liste de paramètres );
-    // Mode d'emploi :
-    //
-    // Contrat :
-    //
     typedef Outer_map::iterator Outer_iterator;
     typedef Outer_map::const_iterator Outer_cIterator;
     typedef Inner_map::iterator Inner_iterator;
@@ -66,16 +61,14 @@ public:
 
     void Display();
 
-
+    void CreateGraphVizFile(string fileName);
+    // Mode d'emploi :
+    //  Créer le fichier texte .dot au format GraphViz
+    //  Ce fichier représente le graphe
+    // Contrat :
+    //  Paramètre nom de fichier non nul ni vide
 
 //------------------------------------------------- Surcharge d'opérateurs
-//    GraphString & operator = ( const GraphString & unGraphString );
-//    // Mode d'emploi :
-//    //
-//    // Contrat :
-//    //
-
-
 //-------------------------------------------- Constructeurs - destructeur
     GraphString ( const GraphString & unGraphString );
     // Mode d'emploi (constructeur de copie) :
@@ -105,8 +98,8 @@ private:
 
 protected:
 //----------------------------------------------------- Attributs protégées
+        Outer_map graph;
 
-Outer_map graph;
 private:
 //------------------------------------------------------- Attributs privés
 

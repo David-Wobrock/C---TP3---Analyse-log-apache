@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 
     cout << parameters->find(CommandReader::LOG_FILE_NAME_KEY)->second << endl;
 
-    ApacheLogFileParser apacheParser(parameters->find("LOG_FILE_NAME")->second);
+    ApacheLogFileParser apacheParser(parameters->find(CommandReader::LOG_FILE_NAME_KEY)->second);
 
     if(!apacheParser.IsGood())
     {

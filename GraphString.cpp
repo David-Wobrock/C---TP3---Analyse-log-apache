@@ -99,12 +99,6 @@ void GraphString::Display()
 
 
 //------------------------------------------------- Surcharge d'opérateurs
-//GraphString & GraphString::operator = ( const GraphString & unGraphString )
-//// Algorithme :
-////
-//{
-//} //----- Fin de operator =
-
 
 //-------------------------------------------- Constructeurs - destructeur
 GraphString::GraphString ( const GraphString & unGraphString )
