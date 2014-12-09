@@ -34,7 +34,9 @@ TestsSRC=$(TestsSRCDir)TCommandReader.cpp $(TestsSRCDir)TGraphString.cpp
 TestsOBJ=$(TestsSRC:.cpp=.o)
 
 TestsEXE=$(TestsEXEDir)TCommandReader $(TestsEXEDir)TGraphString
+GeneratedTestFiles=$(TestsSRCDir)court.dot $(TestsSRCDir)court.png
 
+# Cible
 $(TestTARGET): $(TestsEXE)
 
 # Compilation : COMMAND READER test #
@@ -62,4 +64,4 @@ RMFlags=-f
 
 .PHONY: $(CLEAN)
 $(CLEAN):
-	$(RM) $(RMFlags) $(EXE) $(OBJ) $(MainOBJ) $(TestsEXE) $(TestsOBJ)
+	$(RM) $(RMFlags) $(EXE) $(OBJ) $(MainOBJ) $(TestsEXE) $(TestsOBJ) $(GeneratedTestFiles)

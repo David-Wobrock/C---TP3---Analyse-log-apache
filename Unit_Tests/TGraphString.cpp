@@ -38,14 +38,15 @@ void Test_CreateGraphVizFile()
     cout << "page2 -> page1 (1)" << endl;
     cout << "page2 -> page3 (1)" << endl;
     cout << "page3 -> page2 (1)" << endl;
-    GraphString g;
-    g.Insert("/page2.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page1.html");
-    g.Insert("/page1.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page2.html");
-    g.Insert("/page2.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page3.html");
-    g.Insert("/page3.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page2.html");
-    g.Insert("/image.jpg HTTP/1.1", "http://intranet-if.insa-lyon.fr/page3.html");
-    g.Insert("/page2.html HTTP/1.1", "http://intranet-if.insa-lyon.fr/page1.html");
     
+    GraphString g;
+    g.Insert("/page2.html", "/page1.html");
+    g.Insert("/page1.html", "/page2.html");
+    g.Insert("/page2.html", "/page3.html");
+    g.Insert("/page3.html", "/page2.html");
+    g.Insert("/page2.html", "/page1.html");
+    
+    cout << "Résultat de l'exécution : génération de court.dot et d'un court.png" << endl;
     g.CreateGraphVizFile("Unit_Tests/court.dot");
     system("dot -Tpng -o Unit_Tests/court.png Unit_Tests/court.dot");
 }
