@@ -7,6 +7,8 @@
 
 using namespace std;
 
+string CleanURL(string url);
+
 int main(int argc, char** argv)
 {
     CommandReader cm(argc, argv);
@@ -57,23 +59,41 @@ int main(int argc, char** argv)
 //        cout << "|" << ptLogLine->ll_dataSize << "|" << endl;
 //        cout << "|" << ptLogLine->ll_referer << "|" << endl;
 //        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
+        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
+        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
         graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
     }
 //    cout << apacheParser.GetLastError() << endl;
-    //graph.Display();
-
-    //parcours et affichage du graphe
-    for(GraphString::Outer_cIterator i = graph.Outer_begin(), iend = graph.Outer_end(); i != iend; ++i)//du debut a la fin du graph
-    {
-        cout << "cible : (" << i->second.second << ")" << endl << i->first << endl;
-        cout << "\treferer : " << endl;
-        for (GraphString::Inner_cIterator j = graph.Inner_begin(i->first), jend = graph.Inner_end(i->first); j != jend; ++j)
-        {
-               cout << "\t- " << j->first << "(" << j->second << ")" << endl;
-        }
-    }
-
-    cout << "taille du graphe : " << graph.Size() << endl;
     return 0;
 }
 
+string CleanURL(string url)
+//  Nettoie une url de ses paramètres
+//  ENleve la partie local de l'url lorsqu'on est sur l'intranet
+{
+    //Constantes de la fonction
+    const string localURL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
+    // peut par exemple être    http://intranet-if:90/
+    // ou                       http://intranet-if.insa-lyon.fr
+    size_t deb = 0;
+    size_t end = 0;
+    if(url.find(localURL) != string::npos)// si la chaine a été trouvée on est sur l'intranet
+    {
+        deb = url.find("/", localURL.size());
+
+    }
+    if((end = url.find("?",deb)) == string::npos)// si on ne trouve pas de parametrage par point d'interrogation
+    {
+        if((end = url.find(";",deb)) == string::npos)// on teste le parametrage par point virgule
+        {
+            //pas de parametrage
+            end = url.size();
+        }
+    }
+    //on enleve maintenant le slash s'il se trouve a la fin de l'url
+    if(url.at(url.length()-1) == '/')
+    {
+        url.pop_back();
+    }
+    return url.substr(deb, end-deb);
+}
