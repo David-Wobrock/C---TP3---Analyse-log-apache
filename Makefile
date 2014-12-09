@@ -1,5 +1,5 @@
 EXE=analog
-INT=CommandReader.h ApacheLogFileParser.h
+INT=CommandReader.h ApacheLogFileParser.h GraphString.h
 SRC=$(INT:.h=.cpp)
 OBJ=$(INT:.h=.o)
 	

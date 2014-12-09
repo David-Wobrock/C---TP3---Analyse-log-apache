@@ -12,6 +12,7 @@
 //-------------------------------------------------------- Include système
 using namespace std;
 #include <iostream>
+#include <fstream>
 
 //------------------------------------------------------ Include personnel
 #include "GraphString.h"
@@ -97,6 +98,32 @@ void GraphString::Display()
     }
 }
 
+void GraphString::CreateGraphVizFile(string fileName)
+// Algorithme :
+//      1) Ouverture du flux
+//      2) Ecriture du début du fichier
+//      3) Ecriture du graphe
+//      4) Ecriture de fin de fichier
+//      5) Fermeture du flux
+{
+    // 1) Ouverture du flux
+    ofstream graphFileStream;
+    graphFileStream.open(fileName);
+    if (graphFileStream.good())
+    {
+        
+    }
+    
+    // 2) Ecriture du début du fichier
+    
+    
+    // 3) Ecriture du graphe
+    // 4) Ecriture de fin de fichier
+    
+    // 5) Fermeture du flux
+    graphFileStream.close();
+
+} // Fin de la méthode CreateGraphVizFile
 
 //------------------------------------------------- Surcharge d'opérateurs
 
