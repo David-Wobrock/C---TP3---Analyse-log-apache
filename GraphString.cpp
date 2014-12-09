@@ -52,7 +52,7 @@ void GraphString::Insert(string referer, string target)
         }
         else
         {
-            // le liens n'existe pas, on l'insere
+            // le lien n'existe pas, on l'insere
             (*currentInnerMap)[referer]++;
         }
 
@@ -107,17 +107,33 @@ void GraphString::CreateGraphVizFile(string fileName)
     // 1) Ouverture du flux
     ofstream graphFileStream;
     graphFileStream.open(fileName);
-    if (graphFileStream.good())
+    if (!graphFileStream.good())
     {
-        
+        cerr << "Erreur ouverture fichier graphe (GraphString::CreateGraphVizFile)" << endl;
+        return;
     }
     
     // 2) Ecriture du début du fichier
-    
+    graphFileStream << "digraphe {" << endl;
     
     // 3) Ecriture du graphe
-    // 4) Ecriture de fin de fichier
+    Outer_cIterator outerIt;
+    Outer_cIterator itOuterEnd = Outer_end();
+    Inner_cIterator innerIt;
+    Inner_cIterator itInnerEnd = Inner_end();
+    for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
+    {
+        // First : target string
+        // Second : pair<map, int>
+        for (innerIt = Inner_begin(); innerIt != itInnerEnd; ++innerIt)
+        {
+            // First : referer string
+            // Second : links
+        }
+    }
     
+    // 4) Ecriture de fin de fichier
+    graphFileStream << "}" << endl;
     // 5) Fermeture du flux
     graphFileStream.close();
 
