@@ -45,17 +45,7 @@ void GraphString::Insert(string referer, string target)
         Inner_pair* currentPair = &graph[target];
         Inner_map* currentInnerMap = &currentPair->first;
         currentPair->second++;// on incrémente le compteur de liens totaux
-        if(currentInnerMap->find(referer) != currentInnerMap->end())
-        {
-            // le liens existe
-            (*currentInnerMap)[referer]++;
-        }
-        else
-        {
-            // le lien n'existe pas, on l'insere
-            (*currentInnerMap)[referer]++;
-        }
-
+        (*currentInnerMap)[referer]++;
     }
     else
     {
@@ -129,9 +119,9 @@ void GraphString::CreateGraphVizFile(string fileName)
         {
             // First : referer string
             // Second : links
-            graphFileStream << "\"" << outerIt->first << "\" ";
+            graphFileStream << "\"" << innerIt->first << "\" ";
             graphFileStream <<"->";
-            graphFileStream << " \"" << innerIt->first << "\" ";
+            graphFileStream << " \"" << outerIt->first << "\" ";
             graphFileStream << "[label=\"" << innerIt->second << "\"];" << endl;
             
         }

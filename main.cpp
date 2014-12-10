@@ -23,8 +23,6 @@ int main(int argc, char** argv)
         return -1; // Fin du programme : mauvais paramètre ou aide demandée
     }
 
-    cout << parameters->find(CommandReader::LOG_FILE_NAME_KEY)->second << endl;
-
     ApacheLogFileParser apacheParser(parameters->find(CommandReader::LOG_FILE_NAME_KEY)->second);
 
     if(!apacheParser.IsGood())
@@ -37,7 +35,6 @@ int main(int argc, char** argv)
     ptLogLine = new LogLine;
     GraphString graph;
 
-    cout << "taille du graphe : " << graph.Size() << endl;
     while(apacheParser.GetLine(ptLogLine))
     {
         //pour chaque ligne du fichier
@@ -63,7 +60,20 @@ int main(int argc, char** argv)
         ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
         graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
     }
-//    cout << apacheParser.GetLastError() << endl;
+    
+    map<string, string>::const_iterator i = parameters->find("-g");
+    if (i != parameters->end())
+    {
+	graph.CreateGraphVizFile(i->second);
+        multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(10);
+        multimap<int, string, greater<int>>::const_iterator it;
+        multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
+        for (it = mostVisited.begin(); it != itEnd; ++it)
+        {
+            cout << it->second << " (" << it->first << " hits)" << endl;
+        }
+    }
+    
     return 0;
 }
 
@@ -75,6 +85,8 @@ string CleanURL(string url)
     const string localURL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
     // peut par exemple être    http://intranet-if:90/
     // ou                       http://intranet-if.insa-lyon.fr
+    //const string localURL2 = "http://if.insa-lyon.fr";
+    
     size_t deb = 0;
     size_t end = 0;
     if(url.find(localURL) != string::npos)// si la chaine a été trouvée on est sur l'intranet
@@ -82,6 +94,12 @@ string CleanURL(string url)
         deb = url.find("/", localURL.size());
 
     }
+//    else if(url.find(localURL2) != string::npos)
+//    {
+//        deb = url.find("/", localURL2.size());
+//    }
+    
+    
     if((end = url.find("?",deb)) == string::npos)// si on ne trouve pas de parametrage par point d'interrogation
     {
         if((end = url.find(";",deb)) == string::npos)// on teste le parametrage par point virgule
@@ -90,10 +108,11 @@ string CleanURL(string url)
             end = url.size();
         }
     }
-    //on enleve maintenant le slash s'il se trouve a la fin de l'url
-    if(url.at(url.length()-1) == '/')
+    //on enleve maintenant le slash s'il se trouve a la fin de l'url si l'url restante n'est pas un slash seul.
+    string result = url.substr(deb, end-deb);
+    if (result.at(result.length()-1) == '/' && result != "/")
     {
-        url.pop_back();
+        result.pop_back();
     }
-    return url.substr(deb, end-deb);
+    return result;
 }

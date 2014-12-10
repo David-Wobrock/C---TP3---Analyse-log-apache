@@ -52,6 +52,7 @@ void Test_CreateGraphVizFile()
     cout << "Résultat de l'exécution : génération de court.dot et d'un court.png" << endl;
     g.CreateGraphVizFile("Unit_Tests/court.dot");
     system("dot -Tpng -o Unit_Tests/court.png Unit_Tests/court.dot");
+    system("shotwell Unit_Tests/court.png&");
     
     cout << endl;
 }
@@ -74,9 +75,9 @@ void Test_GetMostVisited()
     g.Insert("/page1.html", "/page2.html");
     
     cout << "Affiche des résultats renvoyés par GetMostVisited() (:nombre des liens = 10)" << endl;
-    multimap<int, string> m = g.GetMostVisited(10);
-    multimap<int, string>::const_iterator it;
-    multimap<int, string>::const_iterator itEnd = m.end();
+    multimap<int, string, greater<int>> m = g.GetMostVisited(10);
+    multimap<int, string, greater<int>>::const_iterator it;
+    multimap<int, string, greater<int>>::const_iterator itEnd = m.end();
     for(it = m.begin(); it != itEnd; ++it)
     {
         cout << it->second << " (" << it->first << " hits)" << endl;
