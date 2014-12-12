@@ -137,8 +137,13 @@ void GraphString::CreateGraphVizFile(string fileName)
 
 set<pair<string, int>, compareVisitedLinks> GraphString::GetMostVisited(unsigned int numberOfLinks)
 {
-    // 10 sites les plus visités
     set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
+    
+    if (numberOfLinks == 0)
+    {
+        return mostVisitedLinks;
+    }
+    
         // Parcours de tous les liens
     Outer_cIterator outerIt;
     Outer_cIterator outerItEnd = graph.end();

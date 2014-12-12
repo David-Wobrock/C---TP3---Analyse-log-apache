@@ -72,7 +72,7 @@ CommandReader::CommandReader (const int argc, char** const argv)
     {
         displayHelp();
     }
-    // Sinon on analyse la ligne de commande
+    // Sinon on analyse la ligne de commande, ce qui remplit 
     else
     {
         analyzeCommand(argc, argv);
@@ -125,7 +125,7 @@ bool CommandReader::argContains(const int argc, char** const argv, const string 
 
 void CommandReader::analyzeCommand(const int argc, char** const argv)
 {
-    set<string> optionWithoutArgs = {"-x"};
+    set<string> optionWithoutArgs = {"-x", "-i", "-o"};
     bool hasFoundLogFile = false;
     bool hasTriedToFindLogFile = false;
 
@@ -133,7 +133,7 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
     {
         string arg = string(argv[i]);
 
-        // Si l'argument ne commence pas par un tiret, c'est le nom du fichier de log
+        // ***** Si l'argument ne commence pas par un tiret, c'est le nom du fichier de log ***** //
         if (arg[0] != '-')
         {
             hasTriedToFindLogFile = true;
@@ -161,7 +161,8 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
             hasFoundLogFile = true;
             insertParameters(CommandReader::LOG_FILE_NAME_KEY, arg);
         }
-        // Si l'argument a un tiret
+        
+        // ***** Si l'argument a un tiret ***** //
         else
         {
             // S'il n'y que un tiret
@@ -171,7 +172,7 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
                 break;
             } 
 
-            // Si c'est une option qui n'a pas besoin d'argument
+            // ***** Si c'est une option qui n'a pas besoin d'argument ***** //
             if (optionWithoutArgs.find(arg) != optionWithoutArgs.end())
             {
                 if (!insertParameters(arg, ""))
@@ -180,7 +181,8 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
                     break;
                 }
             }
-            // Si c'est une option qui a besoin d'un argument
+            
+            // ***** Si c'est une option qui a besoin d'un argument ***** //
             else
             {
                 // S'il n'y a pas d'argument après (si c'est le dernier, ou celui ou le suivant commence par -)
@@ -192,7 +194,7 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
 
                 string argument = argv[i+1];
 
-                // Cas spéciaux pour l'option -g
+                // ** Cas spéciaux pour l'option -g ** //
                 if (arg == "-g")
                 {
                     // Si l'argument est trop court
@@ -209,7 +211,7 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
                     }
                 }
 
-                // Cas spéciaux pour l'option -t
+                // ** Cas spéciaux pour l'option -t ** //
                 if (arg == "-t")
                 {
                     bool argIsDigit = true;
@@ -233,6 +235,34 @@ void CommandReader::analyzeCommand(const int argc, char** const argv)
                     if (intArg < 0 || 23 < intArg)
                     {
                         setError("L'argument de l'option -t n'est pas compris entre 0 et 23.");
+                        break;
+                    }
+                }
+                
+                // ** Cas spéciaux pour l'option -l ** //
+                if (arg == "-l")
+                {
+                    bool argIsDigit = true;
+                    for (unsigned int i = 0; i < argument.size(); ++i)
+                    {
+                        if (!isdigit(argument[i]))
+                        {
+                            setError("L'argument de l'option -l n'est pas un entier.");
+                            argIsDigit = false;
+                            break;
+                        }
+                    }
+
+                    if (!argIsDigit)
+                    {
+                        break;
+                    }
+
+                    int intArg = atoi(argument.c_str());
+
+                    if (intArg < 0)
+                    {
+                        setError("L'argument de l'option -t doit être supérieur ou égal à 0.");
                         break;
                     }
                 }
@@ -269,24 +299,47 @@ void CommandReader::displayHelp() const
     cout << "\tLe FICHIERLOG doit se terminer par l'extension .log ou .txt." << endl;
     cout << "\tLes arguments peuvent être écrit dans n'importe quel ordre." << endl;
     
+    
     cout << endl << "\tOPTION :" << endl;
+    
+    cout << "\t-h" << endl;
+    cout << "\t\tAffiche l'aide du programme analog." << endl;
+    
     cout << "\t-x" << endl;
     cout << "\t\tIgnore les documents qui ont une extension de type image, css ou javascript." << endl;
+    cout << "\t\tListe complète des extensions ignorées :" << endl;
+    cout << "\t\t\t.css, .js, .png, .jpg, .jpeg, .bmp, .gif, .svg, .ico" << endl;
+    
     cout << endl << "\t-g FICHIERGRAPH" << endl;
     cout << "\t\tGénère un fichier FICHIERGRAPH au format GraphViz. Ce document contient tous les noeuds et arcs, ainsi que le nombre de parcours." << endl;
     cout << "\t\tFICHIERGRAPH doit se finir par .dot." << endl;
     cout << "\t\tSi FICHIERGRAPH existe, il est écrasé et remplacé par le nouveau fichier." << endl;
+    
     cout << endl << "\t-t HEURE" << endl;
     cout << "\t\tLe programme ne prend que en compte les hits effectue dans l'intervalle de HEURE à HEURE+1." << endl;
     cout << "\t\tHEURE est un entier compris entre 0 et 23 (inclus)." << endl;
     
+    cout << endl << "\t-i" << endl;
+    cout << "\t\tMode interne. Le programme n'affiche que les navigations internes du site web. Les accès depuis l'extérieur ou autres seront inutiles." << endl;
+    
+    cout << endl << "\t-o" << endl;
+    cout << "\t\tOpen. Génere l'image (en format .png) correspondant au graphe obtenu par l'option -g, et l'affiche." << endl;
+    cout << "\t\tNécessite que l'utilitaire 'dot' et 'shotwell' soit installés sur le poste de travail." << endl;
+    cout << "\t\tCette option sera ignorée si l'option -g n'est pas présente." << endl;
+    cout << "\t\tLa génération d'image peut devenir longue selon la taille du graphe généré." << endl;
+    
+    cout << endl << "\t-l [NBLINKS=10]" << endl;
+    cout << "\t\tAffiche les NBLINKS liens les plus visités sur le site." << endl;
+    cout << "\t\tNBLINKS doit être supérieur ou égale à 0. Par défaut, celui-ci est à 10." << endl;
+    
+            
     cout << endl << "AUTHOR" << endl;
     cout << "\tEcrit par Loïc Touzard et David Wobrock (2014)" << endl;
 } //---- Fin de la méthode DisplayHelp
 
 void CommandReader::displaySyntaxe() const
 {
-    cerr << "./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG" << endl;
+    cerr << "./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]" << endl;
 }
 
 //------------------------------------------------------- Méthodes privées

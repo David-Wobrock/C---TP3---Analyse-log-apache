@@ -64,7 +64,6 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
     
     bool optionX = false;
     int optionT = -1;
-    unsigned int numberOfLinks = 10;
     bool insert;
     
     if (parameters->find("-x") != parameters->end())
@@ -125,17 +124,33 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
     delete ptLogLine;
     
     // Génération du graphe
-    graph.CreateGraphVizFile(itOptionGraphe->second);
+    string graphName = itOptionGraphe->second;
+    graph.CreateGraphVizFile(graphName);
+    
     // Affichage des 10 sites les plus visités
-    /*multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(numberOfLinks);
-    multimap<int, string, greater<int>>::const_iterator it;
-    multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
-    for (it = mostVisited.begin(); it != itEnd; ++it)
+    int numberOfLinks = 10;
+    map<string, string>::const_iterator itLinkOption = parameters->find("-l");
+    if (itLinkOption != parameters->end())
     {
-        cout << it->second << " (" << it->first << " hits)" << endl;
-    }*/
+        numberOfLinks = atoi(itLinkOption->second.c_str());
+    }
     set<pair<string, int>, compareVisitedLinks> s = graph.GetMostVisited(numberOfLinks);
     DisplayMostVisitedSet(s);
+    
+    // Si on souhaite générer l'image
+    if (parameters->find("-o") != parameters->end())
+    {
+        string imageName = graphName.substr(0, graphName.size() - 3) + "png";
+        // dot -Tpng -o IMAGE.png GRAPHE.dot
+        string generateImageCommand = "dot -Tpng -o " + imageName + " " + itOptionGraphe->second;
+        // shotwell IMAGE.png&
+        string displayImageCommand = "shotwell " + imageName + "&";
+        
+        cout << "Generating " << imageName << ". Please wait... (this might take a while)" << endl;
+        system(generateImageCommand.c_str());
+        cout << "Image generated." << endl;
+        system(displayImageCommand.c_str());
+    }
 }
 
 void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
@@ -146,7 +161,6 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
     
     bool optionX = false;
     int optionT = -1;
-    int numberOfLinks = 10;
     bool insert;
     
     if (parameters->find("-x") != parameters->end())
@@ -192,30 +206,40 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
     delete ptLogLine;
     
     // 10 sites les plus visités
-    set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
-        // Parcours de tous les liens
-    map<string, int>::const_iterator it;
-    map<string, int>::const_iterator itEnd = visitedLinks.end();
-    for (it = visitedLinks.begin(); it != itEnd; ++it)
+    unsigned int numberOfLinks = 10;
+    map<string, string>::const_iterator itLinkOption = parameters->find("-l");
+    if (itLinkOption != parameters->end())
     {
-        if (mostVisitedLinks.size() < numberOfLinks)
-        {
-            mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
-        }
-        else
-        {
-            set<pair<string, int>, compareVisitedLinks>::const_iterator i = mostVisitedLinks.begin();
-            advance(i, numberOfLinks-1);
-            
-            if (it->second > i->second)
-            {
-                mostVisitedLinks.erase(i);
-                mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
-            }
-        }
+        numberOfLinks = atoi(itLinkOption->second.c_str());
     }
     
-    DisplayMostVisitedSet(mostVisitedLinks);
+    if (numberOfLinks != 0)
+    {
+        set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
+        // Parcours de tous les liens
+        map<string, int>::const_iterator it;
+        map<string, int>::const_iterator itEnd = visitedLinks.end();
+        for (it = visitedLinks.begin(); it != itEnd; ++it)
+        {
+            if (mostVisitedLinks.size() < numberOfLinks)
+            {
+                mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
+            }
+            else
+            {
+                set<pair<string, int>, compareVisitedLinks>::const_iterator i = mostVisitedLinks.begin();
+                advance(i, numberOfLinks-1);
+
+                if (it->second > i->second)
+                {
+                    mostVisitedLinks.erase(i);
+                    mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
+                }
+            }
+        }
+
+        DisplayMostVisitedSet(mostVisitedLinks);
+    }
 }
 
 string CleanURL(string url)
@@ -259,6 +283,7 @@ string CleanURL(string url)
 }
     
 bool CorrectExtension(string s)
+// Mode d'emploi : vérifie si l'extension de la chaîne s en paramètre ne se finit pas avec une des extensions ci-dessous
 {
     set<string> extensionsToIgnore = {".css", ".js", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".svg", ".ico"};
     size_t pos = s.find_last_of('.');

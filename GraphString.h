@@ -88,10 +88,10 @@ public:
     set<pair<string, int>, compareVisitedLinks> GetMostVisited(unsigned int numberOfLinks);
     // Mode d'emploi : 
     //  Renvoie les "numberOfLinks" liens les plus visités dans l'ordre décroissant des visites
-    //  Sous la forme <nombreDeVisitesTotales, nomDuLien>
+    //  Sous la forme <nomDuLien, nombreDeVisitesTotales>
     //  Si le nombre de liens à afficher est supérieur au nombre de liens existant dans le graphe, on affiche le maximum de liens possible
     // Contrat :
-    //  Nombre de liens à afficher doit être strictement supérieur à 0.
+    //
     
 //------------------------------------------------- Surcharge d'opérateurs
 //-------------------------------------------- Constructeurs - destructeur
