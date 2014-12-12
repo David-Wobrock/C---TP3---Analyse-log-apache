@@ -138,18 +138,30 @@ void GraphString::CreateGraphVizFile(string fileName)
 multimap<int, string, greater<int>> GraphString::GetMostVisited(int numberOfLinks)
 {
     // Fonction de comparaison pour ordre décroissant
-    multimap<int, string, greater<int>> mostVisitedLinks
-    multimap<int, string*, greater<int>> allOrderedLinks;
-    int lowestValue = 0;
+    multimap<int, string, greater<int>> mostVisitedLinks;
+    multimap<int, string, greater<int>> allOrderedLinks;
     
     Outer_cIterator outerIt;
     Outer_cIterator itOuterEnd = Outer_end();
     
     for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
     {
-        allOrderedLinks.insert(make_pair(outerIt->second.second, &outerIt->first));
+        //allOrderedLinks.insert(make_pair(outerIt->second.second, &outerIt->first));
+        allOrderedLinks.insert(pair<int, string>(outerIt->second.second, outerIt->first));
+        
     }
-        // A TERMINER
+    
+    multimap<int, string, greater<int>>::const_iterator it = allOrderedLinks.begin();
+    int i = 0;
+    while (i < numberOfLinks)
+    {
+        //mostVisitedLinks.insert(make_pair(it->first, it->second));
+        mostVisitedLinks.insert(pair<int, string>(it->first, it->second));
+        ++i;
+        ++it;
+    }
+    
+    /*
     for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
     {
         //parcourt complet de la map
@@ -183,7 +195,7 @@ multimap<int, string, greater<int>> GraphString::GetMostVisited(int numberOfLink
     
     multimap<int, string, greater<int>>::const_iterator lowestPair = mostVisitedLinks.end() - 1;
     mostVisitedLinks.erase(lowestPair);
-    
+    */
     return mostVisitedLinks;
 } // ----- Fin de la méthode GetMostVisited
 

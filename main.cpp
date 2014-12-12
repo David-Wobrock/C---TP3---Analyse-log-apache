@@ -153,11 +153,11 @@ void AnalogGraphe(
                 insert = false;
             }
         }
-//        if (ptLogLine->ll_status != 200)
-//        {
-//            insert = false;
-//        }
-//        
+        /*if (ptLogLine->ll_status != 200)
+        {
+            insert = false;
+        }*/
+        
         if (insert)
         {
             graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
@@ -165,16 +165,15 @@ void AnalogGraphe(
     }    
     delete ptLogLine;
     
-    if (itOptionGraphe != parameters->end())
+    // Génération du graphe
+    graph.CreateGraphVizFile(itOptionGraphe->second);
+    // Affichage des 10 sites les plus visités
+    multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(10);
+    multimap<int, string, greater<int>>::const_iterator it;
+    multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
+    for (it = mostVisited.begin(); it != itEnd; ++it)
     {
-	graph.CreateGraphVizFile(itOptionGraphe->second);
-        multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(10);
-        multimap<int, string, greater<int>>::const_iterator it;
-        multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
-        for (it = mostVisited.begin(); it != itEnd; ++it)
-        {
-            cout << it->second << " (" << it->first << " hits)" << endl;
-        }
+        cout << it->second << " (" << it->first << " hits)" << endl;
     }
 }
 
@@ -182,12 +181,62 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
 {
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
-    //map<string, int> 
+    map<string, int> visitedLinks;
     
+    bool optionX = false;
+    int optionT = -1;
+    bool insert;
     
+    if (parameters->find("-x") != parameters->end())
+    {
+        optionX = true;
+    }
+    map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
+    if (itOptionTemps != parameters->end())
+    {
+        optionT = atoi((itOptionTemps->second).c_str());
+    }
+    
+    // Parcourt des lignes du fichier de log
+    while(apacheParser.GetLine(ptLogLine))
+    {
+        insert = true;
+        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
+        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
+        
+        if (optionX)
+        {
+            if (!CorrectExtension(ptLogLine->ll_url))
+            {
+                insert = false;
+            }
+        }
+        if (optionT != -1)
+        {
+            if (ptLogLine->ll_timeRequest.tm_hour != optionT)
+            {
+                insert = false;
+            }
+        }
+        /*if (ptLogLine->ll_status != 200)
+        {
+            insert = false;
+        }*/
+        
+        if (insert)
+        {
+            visitedLinks[ptLogLine->ll_url]++;
+        }
+        
+    }
+   
     delete ptLogLine;
+    
+    // 10 sites les plus visités
+   
 }
-
+    
+    
 bool CorrectExtension(string s)
 {
     set<string> extensionsToIgnore = {".css", ".js", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".svg", ".ico"};
