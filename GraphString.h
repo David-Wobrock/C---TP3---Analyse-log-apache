@@ -11,6 +11,7 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <map>
+#include <set>
 
 using namespace std;
 //------------------------------------------------------------- Constantes
@@ -19,6 +20,22 @@ using namespace std;
 typedef map<string, int> Inner_map; //map interne, contenant la cible et son nombre de liens
 typedef pair<Inner_map, int> Inner_pair;
 typedef map<string, Inner_pair> Outer_map;
+
+struct compareVisitedLinks
+{
+    bool operator() (const pair<string, int>& left, const pair<string, int>& right)
+    {
+        if (left.second >= right.second)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+};
+
 
 //------------------------------------------------------------------------
 // Rôle de la classe <GraphString>
@@ -68,7 +85,7 @@ public:
     // Contrat :
     //  Paramètre nom de fichier non nul ni vide
 
-    multimap<int, string, greater<int>> GetMostVisited(int numberOfLinks);
+    set<pair<string, int>, compareVisitedLinks> GetMostVisited(unsigned int numberOfLinks);
     // Mode d'emploi : 
     //  Renvoie les "numberOfLinks" liens les plus visités dans l'ordre décroissant des visites
     //  Sous la forme <nombreDeVisitesTotales, nomDuLien>

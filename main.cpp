@@ -8,13 +8,15 @@
 
 using namespace std;
 
-string CleanURL(string url);
-void AnalogGraphe(
-        ApacheLogFileParser& apacheParser,
-        map<string, string>* parameters,
-        map<string, string>::const_iterator itOptionGraphe);
+// Prototypes
+void AnalogGraphe(  ApacheLogFileParser& apacheParser,
+                    map<string, string>* parameters,
+                    map<string, string>::const_iterator itOptionGraphe);
 void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters);
+string CleanURL(string url);
 bool CorrectExtension(string s);
+void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedLinks);
+
 
 int main(int argc, char** argv)
 {
@@ -39,7 +41,7 @@ int main(int argc, char** argv)
     }
 
     map<string, string>::const_iterator itOptionGraphe = parameters->find("-g");
-    // Si l'option -g est présente
+    // Si l'option -g est présente, alors on génère un graphe
     if (itOptionGraphe != parameters->end())
     {
         AnalogGraphe(apacheParser, parameters, itOptionGraphe);
@@ -50,6 +52,170 @@ int main(int argc, char** argv)
     }
     
     return 0;
+}
+
+void AnalogGraphe(  ApacheLogFileParser& apacheParser,
+                    map<string, string>* parameters,
+                    map<string, string>::const_iterator itOptionGraphe)
+{
+    struct LogLine *ptLogLine;
+    ptLogLine = new LogLine;
+    GraphString graph;
+    
+    bool optionX = false;
+    int optionT = -1;
+    unsigned int numberOfLinks = 10;
+    bool insert;
+    
+    if (parameters->find("-x") != parameters->end())
+    {
+        optionX = true;
+    }
+    map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
+    if (itOptionTemps != parameters->end())
+    {
+        optionT = atoi((itOptionTemps->second).c_str());
+    }
+    
+    while(apacheParser.GetLine(ptLogLine))
+    {
+        // Pour chaque ligne du fichier
+//        cout << "|" << ptLogLine->ll_ipClient << "|\t\tll_ipClient" << endl;
+//        cout << "|" << ptLogLine->ll_userLog << "|\t\tll_userLog" << endl;
+//        cout << "|" << ptLogLine->ll_authenticatedUser << "|\t\tll_authenticatedUser" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_mday << "|\t\ttm_mday" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_mon << "|\t\ttm_mon" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_year << "|\t\ttm_year" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_hour << "|\t\ttm_hour" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_min << "|\t\ttm_min" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequest.tm_sec << "|\t\ttm_sec" << endl;
+//        cout << "|" << ptLogLine->ll_timeRequestGMT << "|\t\tll_timeRequestGMT" << endl;
+//        cout << "|" << ptLogLine->ll_method << "|" << endl;
+//        cout << "|" << ptLogLine->ll_url << "|" << endl;
+//        cout << "|" << ptLogLine->ll_httpVersion << "|" << endl;
+//        cout << "|" << ptLogLine->ll_status << "|" << endl;
+//        cout << "|" << ptLogLine->ll_dataSize << "|" << endl;
+//        cout << "|" << ptLogLine->ll_referer << "|" << endl;
+//        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
+        insert = true;
+        // Epuration des URL
+        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
+        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
+        
+        if (optionX)
+        {
+            if (!CorrectExtension(ptLogLine->ll_url))
+            {
+                insert = false;
+            }
+        }
+        if (optionT != -1)
+        {
+            if (ptLogLine->ll_timeRequest.tm_hour != optionT)
+            {
+                insert = false;
+            }
+        }
+        
+        if (insert)
+        {
+            graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
+        }
+    }    
+    delete ptLogLine;
+    
+    // Génération du graphe
+    graph.CreateGraphVizFile(itOptionGraphe->second);
+    // Affichage des 10 sites les plus visités
+    /*multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(numberOfLinks);
+    multimap<int, string, greater<int>>::const_iterator it;
+    multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
+    for (it = mostVisited.begin(); it != itEnd; ++it)
+    {
+        cout << it->second << " (" << it->first << " hits)" << endl;
+    }*/
+    set<pair<string, int>, compareVisitedLinks> s = graph.GetMostVisited(numberOfLinks);
+    DisplayMostVisitedSet(s);
+}
+
+void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
+{
+    struct LogLine *ptLogLine;
+    ptLogLine = new LogLine;
+    map<string, int> visitedLinks;
+    
+    bool optionX = false;
+    int optionT = -1;
+    int numberOfLinks = 10;
+    bool insert;
+    
+    if (parameters->find("-x") != parameters->end())
+    {
+        optionX = true;
+    }
+    map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
+    if (itOptionTemps != parameters->end())
+    {
+        optionT = atoi((itOptionTemps->second).c_str());
+    }
+    
+    // Parcours des lignes du fichier de log
+    while(apacheParser.GetLine(ptLogLine))
+    {
+        insert = true;
+        // Epuration des URL
+        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
+        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
+        
+        if (optionX)
+        {
+            if (!CorrectExtension(ptLogLine->ll_url))
+            {
+                insert = false;
+            }
+        }
+        if (optionT != -1)
+        {
+            if (ptLogLine->ll_timeRequest.tm_hour != optionT)
+            {
+                insert = false;
+            }
+        }
+        
+        if (insert)
+        {
+            visitedLinks[ptLogLine->ll_url]++;
+        }
+        
+    }
+   
+    delete ptLogLine;
+    
+    // 10 sites les plus visités
+    set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
+        // Parcours de tous les liens
+    map<string, int>::const_iterator it;
+    map<string, int>::const_iterator itEnd = visitedLinks.end();
+    for (it = visitedLinks.begin(); it != itEnd; ++it)
+    {
+        if (mostVisitedLinks.size() < numberOfLinks)
+        {
+            mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
+        }
+        else
+        {
+            set<pair<string, int>, compareVisitedLinks>::const_iterator i = mostVisitedLinks.begin();
+            advance(i, numberOfLinks-1);
+            
+            if (it->second > i->second)
+            {
+                mostVisitedLinks.erase(i);
+                mostVisitedLinks.insert(pair<string, int>(it->first, it->second));
+            }
+        }
+    }
+    
+    DisplayMostVisitedSet(mostVisitedLinks);
 }
 
 string CleanURL(string url)
@@ -91,151 +257,6 @@ string CleanURL(string url)
     }
     return result;
 }
-
-void AnalogGraphe(
-        ApacheLogFileParser& apacheParser,
-        map<string, string>* parameters,
-        map<string, string>::const_iterator itOptionGraphe)
-{
-    struct LogLine *ptLogLine;
-    ptLogLine = new LogLine;
-    GraphString graph;
-    
-    bool optionX = false;
-    int optionT = -1;
-    bool insert;
-    
-    if (parameters->find("-x") != parameters->end())
-    {
-        optionX = true;
-    }
-    map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
-    if (itOptionTemps != parameters->end())
-    {
-        optionT = atoi((itOptionTemps->second).c_str());
-    }
-    
-    while(apacheParser.GetLine(ptLogLine))
-    {
-        // Pour chaque ligne du fichier
-//        cout << "|" << ptLogLine->ll_ipClient << "|\t\tll_ipClient" << endl;
-//        cout << "|" << ptLogLine->ll_userLog << "|\t\tll_userLog" << endl;
-//        cout << "|" << ptLogLine->ll_authenticatedUser << "|\t\tll_authenticatedUser" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_mday << "|\t\ttm_mday" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_mon << "|\t\ttm_mon" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_year << "|\t\ttm_year" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_hour << "|\t\ttm_hour" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_min << "|\t\ttm_min" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_sec << "|\t\ttm_sec" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequestGMT << "|\t\tll_timeRequestGMT" << endl;
-//        cout << "|" << ptLogLine->ll_method << "|" << endl;
-//        cout << "|" << ptLogLine->ll_url << "|" << endl;
-//        cout << "|" << ptLogLine->ll_httpVersion << "|" << endl;
-//        cout << "|" << ptLogLine->ll_status << "|" << endl;
-//        cout << "|" << ptLogLine->ll_dataSize << "|" << endl;
-//        cout << "|" << ptLogLine->ll_referer << "|" << endl;
-//        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
-        insert = true;
-        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
-        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
-        
-        if (optionX)
-        {
-            if (!CorrectExtension(ptLogLine->ll_url))
-            {
-                insert = false;
-            }
-        }
-        if (optionT != -1)
-        {
-            if (ptLogLine->ll_timeRequest.tm_hour != optionT)
-            {
-                insert = false;
-            }
-        }
-        /*if (ptLogLine->ll_status != 200)
-        {
-            insert = false;
-        }*/
-        
-        if (insert)
-        {
-            graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
-        }
-    }    
-    delete ptLogLine;
-    
-    // Génération du graphe
-    graph.CreateGraphVizFile(itOptionGraphe->second);
-    // Affichage des 10 sites les plus visités
-    multimap<int, string, greater<int>> mostVisited = graph.GetMostVisited(10);
-    multimap<int, string, greater<int>>::const_iterator it;
-    multimap<int, string, greater<int>>::const_iterator itEnd = mostVisited.end();
-    for (it = mostVisited.begin(); it != itEnd; ++it)
-    {
-        cout << it->second << " (" << it->first << " hits)" << endl;
-    }
-}
-
-void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
-{
-    struct LogLine *ptLogLine;
-    ptLogLine = new LogLine;
-    map<string, int> visitedLinks;
-    
-    bool optionX = false;
-    int optionT = -1;
-    bool insert;
-    
-    if (parameters->find("-x") != parameters->end())
-    {
-        optionX = true;
-    }
-    map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
-    if (itOptionTemps != parameters->end())
-    {
-        optionT = atoi((itOptionTemps->second).c_str());
-    }
-    
-    // Parcourt des lignes du fichier de log
-    while(apacheParser.GetLine(ptLogLine))
-    {
-        insert = true;
-        ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
-        ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
-        
-        if (optionX)
-        {
-            if (!CorrectExtension(ptLogLine->ll_url))
-            {
-                insert = false;
-            }
-        }
-        if (optionT != -1)
-        {
-            if (ptLogLine->ll_timeRequest.tm_hour != optionT)
-            {
-                insert = false;
-            }
-        }
-        /*if (ptLogLine->ll_status != 200)
-        {
-            insert = false;
-        }*/
-        
-        if (insert)
-        {
-            visitedLinks[ptLogLine->ll_url]++;
-        }
-        
-    }
-   
-    delete ptLogLine;
-    
-    // 10 sites les plus visités
-   
-}
-    
     
 bool CorrectExtension(string s)
 {
@@ -255,5 +276,15 @@ bool CorrectExtension(string s)
     else
     {
         return true;
+    }
+}
+
+void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedLinks)
+{
+    set<pair<string, int>, compareVisitedLinks>::const_iterator it;
+    set<pair<string, int>, compareVisitedLinks>::const_iterator itEnd = visitedLinks.end();
+    for (it = visitedLinks.begin(); it != itEnd; ++it)
+    {
+        cout << it->first << " (" << it->second << " hits)" << endl;
     }
 }

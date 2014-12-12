@@ -135,68 +135,34 @@ void GraphString::CreateGraphVizFile(string fileName)
     
 } // ----- Fin de la méthode CreateGraphVizFile
 
-multimap<int, string, greater<int>> GraphString::GetMostVisited(int numberOfLinks)
+set<pair<string, int>, compareVisitedLinks> GraphString::GetMostVisited(unsigned int numberOfLinks)
 {
-    // Fonction de comparaison pour ordre décroissant
-    multimap<int, string, greater<int>> mostVisitedLinks;
-    multimap<int, string, greater<int>> allOrderedLinks;
-    
+    // 10 sites les plus visités
+    set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
+        // Parcours de tous les liens
     Outer_cIterator outerIt;
-    Outer_cIterator itOuterEnd = Outer_end();
-    
-    for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
+    Outer_cIterator outerItEnd = graph.end();
+    for (outerIt = graph.begin(); outerIt != outerItEnd; ++outerIt)
     {
-        //allOrderedLinks.insert(make_pair(outerIt->second.second, &outerIt->first));
-        allOrderedLinks.insert(pair<int, string>(outerIt->second.second, outerIt->first));
-        
-    }
-    
-    multimap<int, string, greater<int>>::const_iterator it = allOrderedLinks.begin();
-    int i = 0;
-    while (i < numberOfLinks)
-    {
-        //mostVisitedLinks.insert(make_pair(it->first, it->second));
-        mostVisitedLinks.insert(pair<int, string>(it->first, it->second));
-        ++i;
-        ++it;
-    }
-    
-    /*
-    for (outerIt = Outer_begin(); outerIt != itOuterEnd; ++outerIt)
-    {
-        //parcourt complet de la map
-        if (mostVisitedLinks.size() > numberOfLinks)    //si c'est deja rempli
+        if (mostVisitedLinks.size() < numberOfLinks)
         {
-            if(mostVisitedLinks[numberOfLinks])
+            mostVisitedLinks.insert(pair<string, int>(outerIt->first, outerIt->second.second));
         }
         else
         {
-            mostVisitedLinks.insert(pair<int, string>(outerIt->second.second, outerIt->first)); 
-        }
-        
-        if (outerIt->second.second >= lowestValue)
-        {
-            if (mostVisitedLinks.size() > numberOfLinks)
-            {
-                // On trouve le lien avec le moins de visite
-                multimap<int, string, greater<int>>::const_iterator lowestPair = mostVisitedLinks.end()--;
-                
-                // Suppresion de l'élément
-                mostVisitedLinks.erase(lowestPair);
-            }
-            // Ajout du nouveau lien
-            mostVisitedLinks.insert(pair<int, string>(outerIt->second.second, outerIt->first));  
+            set<pair<string, int>, compareVisitedLinks>::const_iterator i = mostVisitedLinks.begin();
+            advance(i, numberOfLinks-1);
             
-            // Update lowest value
-            multimap<int, string, greater<int>>::const_iterator lastIt = mostVisitedLinks.end() - 1;
-            lowestValue = lastIt->first;
+            if (outerIt->second.second > i->second)
+            {
+                mostVisitedLinks.erase(i);
+                mostVisitedLinks.insert(pair<string, int>(outerIt->first, outerIt->second.second));
+            }
         }
     }
     
-    multimap<int, string, greater<int>>::const_iterator lowestPair = mostVisitedLinks.end() - 1;
-    mostVisitedLinks.erase(lowestPair);
-    */
     return mostVisitedLinks;
+    
 } // ----- Fin de la méthode GetMostVisited
 
 //------------------------------------------------- Surcharge d'opérateurs
