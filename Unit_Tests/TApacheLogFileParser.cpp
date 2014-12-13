@@ -15,5 +15,5 @@ int main()
 }
 
 void Test_IsGood() { }
-void Test_GetLine { }
-void Test_GetLastError { }
+void Test_GetLine() { }
+void Test_GetLastError() { }
