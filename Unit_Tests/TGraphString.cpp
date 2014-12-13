@@ -75,11 +75,12 @@ void Test_GetMostVisited()
     g.Insert("/page1.html", "/page2.html");
     
     cout << "Affiche des résultats renvoyés par GetMostVisited() (:nombre des liens = 10)" << endl;
-    multimap<int, string, greater<int>> m = g.GetMostVisited(10);
-    multimap<int, string, greater<int>>::const_iterator it;
-    multimap<int, string, greater<int>>::const_iterator itEnd = m.end();
-    for(it = m.begin(); it != itEnd; ++it)
+   
+    set<pair<string, int>, compareVisitedLinks> visitedLinks = g.GetMostVisited(10);
+    set<pair<string, int>, compareVisitedLinks>::const_iterator it;
+    set<pair<string, int>, compareVisitedLinks>::const_iterator itEnd = visitedLinks.end();
+    for (it = visitedLinks.begin(); it != itEnd; ++it)
     {
-        cout << it->second << " (" << it->first << " hits)" << endl;
+        cout << it->first << " (" << it->second << " hits)" << endl;
     }
 }

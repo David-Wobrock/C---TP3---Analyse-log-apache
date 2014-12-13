@@ -1,4 +1,19 @@
 Test ID;Return code validation;Out result;StdErr result;File creation result;Global result
+Test_Analog_1.0;2;1;2;2;1
+Test_Analog_1.1.1;2;1;2;1;1
+Test_Analog_1.1.2;2;1;2;1;1
+Test_Analog_1.2.1;2;1;2;2;1
+Test_Analog_1.2.2;2;1;2;1;1
+Test_Analog_1.3.1;2;1;2;2;1
+Test_Analog_1.3.2;2;1;2;1;1
+Test_Analog_1.4.1;2;1;2;2;1
+Test_Analog_1.4.2;2;1;2;1;1
+Test_Analog_1.4.3;2;1;2;2;1
+Test_Analog_1.4.4;2;1;2;1;1
+Test_Analog_1.4.5;2;1;2;2;1
+Test_Analog_1.4.6;2;1;2;1;1
+Test_Analog_1.5.1;2;1;2;2;1
+Test_Analog_1.5.2;2;1;2;1;1
 Test_CommandReader_1.0;2;2;1;2;1
 Test_CommandReader_1.1;2;2;1;2;1
 Test_CommandReader_1.2.1;2;2;1;2;1
@@ -9,9 +24,9 @@ Test_CommandReader_1.5.1;2;2;1;2;1
 Test_CommandReader_1.5.2;2;2;1;2;1
 Test_CommandReader_1.6.1;2;2;1;2;1
 Test_CommandReader_1.6.2;2;2;1;2;1
-Test_CommandReader_1.7;2;2;1;2;1
-Test_CommandReader_1.8;2;2;1;2;1
+Test_CommandReader_1.7.1;2;2;1;2;1
+Test_CommandReader_1.7.2;2;2;1;2;1
+Test_CommandReader_1.8.1;2;2;1;2;1
+Test_CommandReader_1.8.2;2;2;1;2;1
 Test_CommandReader_1.9.1;2;2;1;2;1
 Test_CommandReader_1.9.2;2;2;1;2;1
-Test_CommandReader_1.9.3;2;2;1;2;1
-Test_CommandReader_1.9.4;2;2;1;2;1

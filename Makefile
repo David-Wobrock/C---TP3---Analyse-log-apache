@@ -30,11 +30,11 @@ TestTARGET=tests
 TestsSRCDir=./Unit_Tests/
 TestsEXEDir=$(TestsSRCDir)
 
-TestsSRC=$(TestsSRCDir)TCommandReader.cpp $(TestsSRCDir)TGraphString.cpp
+TestsSRC=$(TestsSRCDir)TCommandReader.cpp $(TestsSRCDir)TGraphString.cpp $(TestsSRCDir)TApacheLogFileParser.cpp
 TestsOBJ=$(TestsSRC:.cpp=.o)
 
-TestsEXE=$(TestsEXEDir)TCommandReader $(TestsEXEDir)TGraphString
-GeneratedTestFiles=$(TestsSRCDir)court.dot $(TestsSRCDir)court.png
+TestsEXE=$(TestsEXEDir)TCommandReader $(TestsEXEDir)TGraphString $(TestsEXEDir)TApacheLogFileParser
+GeneratedTestFiles=$(TestsSRCDir)court.png $(TestsSRCDir)court.dot 
 
 # Cible
 $(TestTARGET): $(TestsEXE)
@@ -56,6 +56,15 @@ $(TestsEXEDir)TGraphString: $(TestsSRCDir)TGraphString.o GraphString.o
 $(TestsSRCDir)TGraphString.o: $(TestsSRCDir)TGraphString.cpp
 	$(ECHO) "Compilation de $(TestsSRCDir)TGraphString.cpp"
 	$(Compilator) -o $(TestsSRCDir)TGraphString.o -c $(TestsSRCDir)TGraphString.cpp $(CompilationsOptions)
+	
+# Compilation : APACHE LOG FILE PARSER test #
+$(TestsEXEDir)TApacheLogFileParser: $(TestsSRCDir)TApacheLogFileParser.o ApacheLogFileParser.o
+	$(ECHO) "Edition des liens de $(TestsEXEDir)TApacheLogFileParser"
+	$(Linker) -o $(TestsEXEDir)TApacheLogFileParser $(TestsSRCDir)TApacheLogFileParser.o ApacheLogFileParser.o
+
+$(TestsSRCDir)TApacheLogFileParser.o: $(TestsSRCDir)TApacheLogFileParser.cpp
+	$(ECHO) "Compilation de $(TestsSRCDir)TApacheLogFileParser.cpp"
+	$(Compilator) -o $(TestsSRCDir)TApacheLogFileParser.o -c $(TestsSRCDir)TApacheLogFileParser.cpp $(CompilationsOptions)
 	
 # ***** CLEAN ***** #
 CLEAN=clean
