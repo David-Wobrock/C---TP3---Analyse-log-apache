@@ -300,7 +300,7 @@ void CommandReader::displayHelp() const
     cout << "\tLes arguments peuvent être écrit dans n'importe quel ordre." << endl;
     
     
-    cout << endl << "\tOPTION :" << endl;
+    cout << endl << "\tOPTION" << endl;
     
     cout << "\t-h" << endl;
     cout << "\t\tAffiche l'aide du programme analog." << endl;
@@ -328,7 +328,7 @@ void CommandReader::displayHelp() const
     cout << "\t\tCette option sera ignorée si l'option -g n'est pas présente." << endl;
     cout << "\t\tLa génération d'image peut devenir longue selon la taille du graphe généré." << endl;
     
-    cout << endl << "\t-l [NBLINKS=10]" << endl;
+    cout << endl << "\t-l NBLINKS=10" << endl;
     cout << "\t\tAffiche les NBLINKS liens les plus visités sur le site." << endl;
     cout << "\t\tNBLINKS doit être supérieur ou égale à 0. Par défaut, celui-ci est à 10." << endl;
     
