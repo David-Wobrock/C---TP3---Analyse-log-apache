@@ -1,0 +1,1 @@
+../../analog ../testLogFile.log -l 3 -g graphe.dot

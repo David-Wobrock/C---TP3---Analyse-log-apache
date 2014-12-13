@@ -1,2 +1,2 @@
-L'argument de l'option -t n'est pas un entier.
-./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG
+Il manque l'argument après -l.
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]

@@ -1,1 +1,1 @@
-Vérifie le comportement du programme avec un argument invalide pour l'option -t (entier non compris entre 0 et 23).
+Vérifie le comportement du programme avec un argument invalide pour l'option -l (n'est pas un entier).

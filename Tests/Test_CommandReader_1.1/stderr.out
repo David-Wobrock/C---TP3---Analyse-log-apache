@@ -1,2 +1,2 @@
 Le nom du fichier log apache est trop court.
-./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]

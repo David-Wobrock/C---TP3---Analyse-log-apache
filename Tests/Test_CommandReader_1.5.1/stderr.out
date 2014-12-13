@@ -1,2 +1,2 @@
 L'argument -x est présent plus d'une fois.
-./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]

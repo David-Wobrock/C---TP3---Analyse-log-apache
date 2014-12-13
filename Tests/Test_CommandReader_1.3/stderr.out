@@ -1,2 +1,2 @@
 Plus d'un fichier de log apache a été détecté.
-./analog [-x] [-t HEURE] [-g FICHIERGRAPH] FICHIERLOG
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]

@@ -1,0 +1,7 @@
+digraph {
+"-" -> "/favicon.ico" [label="1"];
+"www.google.fr" -> "/favicon.ico" [label="1"];
+"-" -> "/temps/4IF15.html" [label="1"];
+"-" -> "/temps/style_emploi_du_temps.css" [label="1"];
+"/temps/4IF15.html" -> "/temps/style_emploi_du_temps.css" [label="1"];
+}

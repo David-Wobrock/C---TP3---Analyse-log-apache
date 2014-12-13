@@ -1,0 +1,2 @@
+../../analog ../testLogFile.log -t 13 -g graphe.dot
+

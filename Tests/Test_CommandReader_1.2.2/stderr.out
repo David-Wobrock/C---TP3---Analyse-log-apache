@@ -1,0 +1,2 @@
+L'extension du fichier de log apache est invalide.
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]

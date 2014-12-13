@@ -1,0 +1,2 @@
+L'argument de l'option -g est trop court.
+./analog FICHIERLOG [-g FICHIERGRAPH] [-t HEURE] [-l NBLIENS=10] [-x] [-i] [-s] [-o]
