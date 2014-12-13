@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <set>
 
 #include "CommandReader.h"
@@ -16,7 +17,12 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters);
 string CleanURL(string url);
 bool CorrectExtension(string s);
 void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedLinks);
+bool IsLocal(string url);
 
+//Constantes
+const string LOCAL_URL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
+// peut par exemple être    http://intranet-if:90/
+// ou                       http://intranet-if.insa-lyon.fr
 
 int main(int argc, char** argv)
 {
@@ -50,7 +56,7 @@ int main(int argc, char** argv)
     {
         Analog(apacheParser, parameters);
     }
-    
+
     return 0;
 }
 
@@ -61,21 +67,26 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
     GraphString graph;
-    
+
     bool optionX = false;
+    bool optionI = false;
     int optionT = -1;
     bool insert;
-    
+
     if (parameters->find("-x") != parameters->end())
     {
         optionX = true;
+    }
+    if (parameters->find("-i") != parameters->end())
+    {
+        optionI = true;
     }
     map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
     if (itOptionTemps != parameters->end())
     {
         optionT = atoi((itOptionTemps->second).c_str());
     }
-    
+
     while(apacheParser.GetLine(ptLogLine))
     {
         // Pour chaque ligne du fichier
@@ -97,36 +108,42 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
 //        cout << "|" << ptLogLine->ll_referer << "|" << endl;
 //        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
         insert = true;
+        if(optionI)
+        {
+            if(!IsLocal(ptLogLine->ll_referer))
+            {
+                insert = false;
+            }
+        }
         // Epuration des URL
         ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
         ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
-        
-        if (optionX)
+
+        if (optionX && insert)
         {
             if (!CorrectExtension(ptLogLine->ll_url))
             {
                 insert = false;
             }
         }
-        if (optionT != -1)
+        if (optionT != -1 && insert)
         {
             if (ptLogLine->ll_timeRequest.tm_hour != optionT)
             {
                 insert = false;
             }
         }
-        
         if (insert)
         {
             graph.Insert(ptLogLine->ll_referer, ptLogLine->ll_url);
         }
-    }    
+    }
     delete ptLogLine;
-    
+
     // Génération du graphe
     string graphName = itOptionGraphe->second;
     graph.CreateGraphVizFile(graphName);
-    
+
     // Affichage des 10 sites les plus visités
     int numberOfLinks = 10;
     map<string, string>::const_iterator itLinkOption = parameters->find("-l");
@@ -136,7 +153,7 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
     }
     set<pair<string, int>, compareVisitedLinks> s = graph.GetMostVisited(numberOfLinks);
     DisplayMostVisitedSet(s);
-    
+
     // Si on souhaite générer l'image
     if (parameters->find("-o") != parameters->end())
     {
@@ -145,7 +162,7 @@ void AnalogGraphe(  ApacheLogFileParser& apacheParser,
         string generateImageCommand = "dot -Tpng -o " + imageName + " " + itOptionGraphe->second;
         // shotwell IMAGE.png&
         string displayImageCommand = "shotwell " + imageName + "&";
-        
+
         cout << "Generating " << imageName << ". Please wait... (this might take a while)" << endl;
         system(generateImageCommand.c_str());
         cout << "Image generated." << endl;
@@ -158,53 +175,65 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
     map<string, int> visitedLinks;
-    
+
     bool optionX = false;
+    bool optionI = false;
     int optionT = -1;
     bool insert;
-    
+
     if (parameters->find("-x") != parameters->end())
     {
         optionX = true;
+    }
+    if (parameters->find("-i") != parameters->end())
+    {
+        optionI = true;
     }
     map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
     if (itOptionTemps != parameters->end())
     {
         optionT = atoi((itOptionTemps->second).c_str());
     }
-    
+
     // Parcours des lignes du fichier de log
     while(apacheParser.GetLine(ptLogLine))
     {
         insert = true;
+        if (optionI)
+        {
+            if (!IsLocal(ptLogLine->ll_referer))
+            {
+                insert = false;
+            }
+        }
         // Epuration des URL
         ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
         ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
-        
-        if (optionX)
+
+        if (optionX && insert)
         {
             if (!CorrectExtension(ptLogLine->ll_url))
             {
                 insert = false;
             }
         }
-        if (optionT != -1)
+        if (optionT != -1 && insert)
         {
             if (ptLogLine->ll_timeRequest.tm_hour != optionT)
             {
                 insert = false;
             }
         }
-        
+
         if (insert)
         {
             visitedLinks[ptLogLine->ll_url]++;
         }
-        
+
     }
-   
+
     delete ptLogLine;
-    
+
     // 10 sites les plus visités
     unsigned int numberOfLinks = 10;
     map<string, string>::const_iterator itLinkOption = parameters->find("-l");
@@ -212,7 +241,7 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
     {
         numberOfLinks = atoi(itLinkOption->second.c_str());
     }
-    
+
     if (numberOfLinks != 0)
     {
         set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
@@ -246,25 +275,19 @@ string CleanURL(string url)
 //  Nettoie une url de ses paramètres
 //  ENleve la partie local de l'url lorsqu'on est sur l'intranet
 {
-    //Constantes de la fonction
-    const string localURL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
-    // peut par exemple être    http://intranet-if:90/
-    // ou                       http://intranet-if.insa-lyon.fr
-    //const string localURL2 = "http://if.insa-lyon.fr";
-    
     size_t deb = 0;
     size_t end = 0;
-    if(url.find(localURL) != string::npos)// si la chaine a été trouvée on est sur l'intranet
+    if(url.find(LOCAL_URL) != string::npos)// si la chaine a été trouvée on est sur l'intranet
     {
-        deb = url.find("/", localURL.size());
+        deb = url.find("/", LOCAL_URL.size());
 
     }
 //    else if(url.find(localURL2) != string::npos)
 //    {
 //        deb = url.find("/", localURL2.size());
 //    }
-    
-    
+
+
     if((end = url.find("?",deb)) == string::npos)// si on ne trouve pas de parametrage par point d'interrogation
     {
         if((end = url.find(";",deb)) == string::npos)// on teste le parametrage par point virgule
@@ -281,7 +304,14 @@ string CleanURL(string url)
     }
     return result;
 }
-    
+
+bool IsLocal(string url)
+{
+    //regarde si l'url du local a été trouvée
+    //ayant "http://" danbs la locale, cela assure que la locale se trouve en début de l'url
+    return(url.find(LOCAL_URL) != string::npos);
+}
+
 bool CorrectExtension(string s)
 // Mode d'emploi : vérifie si l'extension de la chaîne s en paramètre ne se finit pas avec une des extensions ci-dessous
 {
@@ -295,7 +325,7 @@ bool CorrectExtension(string s)
         }
         else
         {
-                return false;  
+                return false;
         }
     }
     else
