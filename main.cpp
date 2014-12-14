@@ -10,7 +10,7 @@
 using namespace std;
 
 // Prototypes
-void AnalogGraphe(  ApacheLogFileParser& apacheParser,
+void AnalogGraphe   (ApacheLogFileParser& apacheParser,
                     map<string, string>* parameters,
                     map<string, string>::const_iterator itOptionGraphe);
 void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters);
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void AnalogGraphe(  ApacheLogFileParser& apacheParser,
+void AnalogGraphe   (ApacheLogFileParser& apacheParser,
                     map<string, string>* parameters,
                     map<string, string>::const_iterator itOptionGraphe)
 {
@@ -305,13 +305,6 @@ string CleanURL(string url)
     return result;
 }
 
-bool IsLocal(string url)
-{
-    //regarde si l'url du local a été trouvée
-    //ayant "http://" danbs la locale, cela assure que la locale se trouve en début de l'url
-    return(url.find(LOCAL_URL) != string::npos);
-}
-
 bool CorrectExtension(string s)
 // Mode d'emploi : vérifie si l'extension de la chaîne s en paramètre ne se finit pas avec une des extensions ci-dessous
 {
@@ -342,4 +335,11 @@ void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedL
     {
         cout << it->first << " (" << it->second << " hits)" << endl;
     }
+}
+
+bool IsLocal(string url)
+{
+    //regarde si l'url du local a été trouvée
+    //ayant "http://" dans la locale, cela assure que la locale se trouve en début de l'url
+    return(url.find(LOCAL_URL) != string::npos);
 }

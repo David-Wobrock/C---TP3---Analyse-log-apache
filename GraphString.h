@@ -103,7 +103,7 @@ public:
 
     GraphString ( );
     // Mode d'emploi :
-    //
+    //  Instancie un objet GraphString, pas de particularité.
     // Contrat :
     //
 

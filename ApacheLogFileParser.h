@@ -46,7 +46,7 @@ public:
     //  Le prochain appel à la fonction lira la ligne suivante
     //  La fonction renvoie un code de retour :
     //      - true : tout s'est bien passé, la ligne a été lue correctement
-    //      - false :  il y a eu une erreur dans la lecture de la ligne, la structure LogLine n'a pas �t� modifi�e
+    //      - false :  il y a eu une erreur dans la lecture de la ligne, la structure LogLine n'a pas été modifiée
     //  L'erreur est renseignée dans la classe et peut être affichée par GetLastError();
     //
     // Contrat :
