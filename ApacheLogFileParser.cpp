@@ -44,12 +44,12 @@ map<string, int> ApacheLogFileParser::months = {
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
-bool ApacheLogFileParser::IsGood()
+bool ApacheLogFileParser::IsGood() const
 {
 	return good;
 } // ----- Fin de la Méthode IsGood()
 
-bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
+bool ApacheLogFileParser::GetLine(struct LogLine* const structLine)
 {
     if(good)
     {
@@ -155,14 +155,14 @@ bool ApacheLogFileParser::GetLine(struct LogLine * structLine)
     }
 } // ----- Fin de la Méthode GetLine()
 
-string ApacheLogFileParser::GetLastError()
+string ApacheLogFileParser::GetLastError() const
 {
 	return "ERREUR : " + lastError;
 } // ----- Fin de la Méthode GetLastError()
 
 
 //-------------------------------------------- Constructeurs - destructeur
-ApacheLogFileParser::ApacheLogFileParser(string File)
+ApacheLogFileParser::ApacheLogFileParser(const string File)
 // Algorithme :
 //
 {

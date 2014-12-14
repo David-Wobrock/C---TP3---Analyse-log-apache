@@ -21,6 +21,7 @@ typedef map<string, int> Inner_map; //map interne, contenant la cible et son nom
 typedef pair<Inner_map, int> Inner_pair;
 typedef map<string, Inner_pair> Outer_map;
 
+// Structure de comparaison pour les statistiques : liens les plus visités
 struct compareVisitedLinks
 {
     bool operator() (const pair<string, int>& left, const pair<string, int>& right)
@@ -39,7 +40,7 @@ struct compareVisitedLinks
 
 //------------------------------------------------------------------------
 // Rôle de la classe <GraphString>
-//
+//  Représente un graphe de chaîne de caractères.
 //
 //------------------------------------------------------------------------
 
@@ -58,34 +59,34 @@ public:
 
     Outer_iterator Outer_end() { return graph.end(); }
 
-    Inner_iterator Inner_begin(string k) { return graph[k].first.begin(); }
+    Inner_iterator Inner_begin(string k)  { return graph[k].first.begin(); }
 
-    Inner_iterator Inner_end(string k) { return graph[k].first.end(); }
+    Inner_iterator Inner_end(string k)  { return graph[k].first.end(); }
 
-    void Insert(string referer, string target);
+    void Insert(const string referer, const string target);
     // Mode d'emploi :
     //  Ajoute un lien dans le graph, partant du referer vers la target
 
-    int GetLinks(string referer, string target);
+    int GetLinks(const string referer, const string target);
     // Mode d'emploi :
     //  renvoie le nombre de lien du graph allant du referrer à la targer
 
-    int GetAllLinks(string target);
+    int GetAllLinks(const string target);
     // Mode d'emploi :
     //  renvoie le nombre total de liens allant vers la target donnée
 
-    int Size();
+    unsigned int Size() const;
 
-    void Display();
+    void Display() const;
 
-    void CreateGraphVizFile(string fileName);
+    void CreateGraphVizFile(const string fileName);
     // Mode d'emploi :
     //  Créer le fichier texte .dot au format GraphViz
     //  Ce fichier représente le graphe
     // Contrat :
     //  Paramètre nom de fichier non nul ni vide
 
-    set<pair<string, int>, compareVisitedLinks> GetMostVisited(unsigned int numberOfLinks);
+    set<pair<string, int>, compareVisitedLinks> GetMostVisited(const unsigned int numberOfLinks) const;
     // Mode d'emploi : 
     //  Renvoie les "numberOfLinks" liens les plus visités dans l'ordre décroissant des visites
     //  Sous la forme <nomDuLien, nombreDeVisitesTotales>

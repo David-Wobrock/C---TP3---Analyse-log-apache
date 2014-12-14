@@ -31,13 +31,8 @@ typedef map<string, Inner_pair> Outer_map;
 //-------------------------------------------------------- Fonctions amies
 
 //----------------------------------------------------- Méthodes publiques
-// type GraphString::Méthode ( liste de paramètres )
-// Algorithme :
-//
-//{
-//} //----- Fin de Méthode
 
-void GraphString::Insert(string referer, string target)
+void GraphString::Insert(const string referer, const string target)
 {
     if(graph.find(target) != graph.end())
     {
@@ -58,22 +53,22 @@ void GraphString::Insert(string referer, string target)
 }
 
 
-int GraphString::GetLinks(string referer, string target)
+int GraphString::GetLinks(const string referer, const string target)
 {
     return graph[target].first[referer];
 }
 
-int GraphString::GetAllLinks(string target)
+int GraphString::GetAllLinks(const string target)
 {
     return graph[target].second;
 }
 
-int GraphString::Size()
+unsigned int GraphString::Size() const
 {
     return graph.size();
 }
 
-void GraphString::Display()
+void GraphString::Display() const
 {
     for(Outer_cIterator i = graph.begin(), iend = graph.end(); i != iend; ++i)//du debut a la fin du graph
     {
@@ -86,7 +81,7 @@ void GraphString::Display()
     }
 }
 
-void GraphString::CreateGraphVizFile(string fileName)
+void GraphString::CreateGraphVizFile(const string fileName)
 // Algorithme :
 //      1) Ouverture du flux
 //      2) Ecriture du début du fichier
@@ -135,7 +130,7 @@ void GraphString::CreateGraphVizFile(string fileName)
     
 } // ----- Fin de la méthode CreateGraphVizFile
 
-set<pair<string, int>, compareVisitedLinks> GraphString::GetMostVisited(unsigned int numberOfLinks)
+set<pair<string, int>, compareVisitedLinks> GraphString::GetMostVisited(const unsigned int numberOfLinks) const
 {
     set<pair<string, int>, compareVisitedLinks> mostVisitedLinks;
     

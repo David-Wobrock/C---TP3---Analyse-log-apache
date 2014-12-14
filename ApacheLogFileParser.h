@@ -33,13 +33,13 @@ class ApacheLogFileParser
 
 public:
 //----------------------------------------------------- Méthodes publiques
-    bool IsGood();
+    bool IsGood() const;
     // Mode d'emploi :
     //  Renvoie un booleen pour connaître l'etat du fichier de log
     //      - true : Le fichier existe, est lisible, ouvert correctement. La fonction GetLine()
     //      - false : Il y a eu un problème avec le fichier. Ce problème n'est pas renseigné ici.
 
-    bool GetLine(struct LogLine *line);
+    bool GetLine(struct LogLine* const structLine);
     // Mode d'emploi :
     //  Lit une ligne du fichier de log.
     //  Remplit la structure LogLine avec son contenu
@@ -52,13 +52,13 @@ public:
     // Contrat :
     //  Le pointeur de structure passé en paramètre est supposé non nul.
 
-    string GetLastError();
+    string GetLastError() const;
     // Mode d'emploi :
     //  Renvoie une string contenant une explication sur la dernière erreur survenue dans la Classe
 
 
 //-------------------------------------------- Constructeurs - destructeur
-    ApacheLogFileParser (string logFile);
+    ApacheLogFileParser (const string logFile);
     // Mode d'emploi :
     //  Construit le parser sur le fichier passé en paramètre.
     //  Une ouverture du fichier en lecture est tentée dans le constructeur.
