@@ -130,14 +130,14 @@ void AnalogGraphe   (ApacheLogFileParser& apacheParser,
         ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
         ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
 
-        if (optionX && insert)
+        if (insert && optionX)
         {
             if (!CorrectExtension(ptLogLine->ll_url))
             {
                 insert = false;
             }
         }
-        if (optionT != -1 && insert)
+        if (insert && optionT != -1)
         {
             if (ptLogLine->ll_timeRequest.tm_hour != optionT)
             {
@@ -221,14 +221,14 @@ void Analog(ApacheLogFileParser& apacheParser, const map<string, string>* const 
         ptLogLine->ll_referer = CleanURL(ptLogLine->ll_referer);
         ptLogLine->ll_url = CleanURL(ptLogLine->ll_url);
 
-        if (optionX && insert)
+        if (insert && optionX)
         {
             if (!CorrectExtension(ptLogLine->ll_url))
             {
                 insert = false;
             }
         }
-        if (optionT != -1 && insert)
+        if (insert && optionT != -1)
         {
             if (ptLogLine->ll_timeRequest.tm_hour != optionT)
             {
