@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 
     if(!apacheParser.IsGood())
     {
-        cout << apacheParser.GetLastError() << endl;
+        cerr << apacheParser.GetLastError() << endl;
         return -1;
     }
 
