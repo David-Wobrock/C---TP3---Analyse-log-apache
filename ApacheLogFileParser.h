@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include "LogLine.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ using namespace std;
 // Rôle de la classe <ApacheLogFileParser>
 //  ApacheLogFileParser peut ouvrir un fichier de log Apache (supposé bien formé)
 //  Le fichier est associé à la classe
-//  Cette classe lit ce fichier et renvoie son contenu ligne par ligne formaté dans un structure LogLine
+//  Cette classe lit ce fichier et renvoie son contenu ligne par ligne formaté dans une structure LogLine
 //------------------------------------------------------------------------
 
 class ApacheLogFileParser
@@ -54,7 +55,7 @@ public:
 
     string GetLastError() const;
     // Mode d'emploi :
-    //  Renvoie une string contenant une explication sur la dernière erreur survenue dans la Classe
+    //  Renvoie une string contenant une explication sur la dernière erreur survenue dans l'instance
 
 
 //-------------------------------------------- Constructeurs - destructeur
@@ -76,10 +77,12 @@ private:
 
 protected:
 //----------------------------------------------------- Attributs protégés
-    string lastError;
-    bool good;
-    ifstream logFile;
-    static map<string, int> months;
+    string lastError; // La dernière erreur survenue dans l'instance
+    bool good; // L'état de l'instance
+    ifstream logFile; // Le flux sur le fichier de log
+    
+//----------------------------------------------------- Attributs de classe protégés
+    static map<string, int> months; // Dictionnaire liant une abréviation de mois (Jan, Feb, ...) à un nombre (0, 1, ...)
 };
 
 

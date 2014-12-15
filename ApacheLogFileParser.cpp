@@ -8,7 +8,6 @@
 //---------- Réalisation de la classe <ApacheLogFileParser> (fichier ApacheLogFileParser.cpp) --
 
 //---------------------------------------------------------------- INCLUDE
-#include "LogLine.h"
 
 //-------------------------------------------------------- Include système
 using namespace std;
