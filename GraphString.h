@@ -26,14 +26,7 @@ struct compareVisitedLinks
 {
     bool operator() (const pair<string, int>& left, const pair<string, int>& right)
     {
-        if (left.second >= right.second)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return left.second >= right.second;
     }
 };
 
