@@ -13,14 +13,42 @@ using namespace std;
 void AnalogGraphe   (ApacheLogFileParser& apacheParser,
                     const map<string, string>* const parameters,
                     const map<string, string>::const_iterator itOptionGraphe);
+// Algorithme :
+//  Parcourt le fichier de log renseigné dans parameters
+//  Crée et stocke un graphe représentant les liens entre cibles et referers
+//  Calcule et affiche les stats sur ce graphe
+//  Génère un fichier .dot lisible en GraphViz
+
 void Analog(ApacheLogFileParser& apacheParser, const map<string, string>* const parameters);
+// Algorithme :
+//  Parcourt le fichier de log renseigné dans parameters
+//  Crée et stocke un ditionnaire représentant les cibles et leur nombre de hit
+//  Calcule et affiche les stats sur ce dictionnaire
+
 string CleanURL(const string url);
+// Algorithme : 
+//  Nettoie l'URL passée en paramètre
+//  Supprime les '/' finaux superflux
+//  Tronque la base de l'URL lorsque elle est sur le réseaux local (défini par la constante LOCAL_URL)
+//  Enleve les paramètres de l'URL (ce qui suit un '?' ou un ';')
+
 bool CorrectExtension(const string s);
+// Algorithme : 
+//  Retourne un booleen indiquant si l'extension de la cible ne fait pas parti de ".css", ".js", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".svg", ".ico"
+
 void DisplayMostVisitedSet(const set<pair<string, int>, compareVisitedLinks>& visitedLinks);
+// Algorithme : 
+//  Parcourt et affiche le contenu du set en parametre.
+//  Passage par référence pour éviter la duplication en mémoire
+
 bool IsLocal(const string url);
+// Algorithme :
+//  Retourne un booleen qui nous renseigne sur l'URL en parametre, pour savoir si c'est une addresse locale ou pas.
+//  (Contenant la constante LOCAL_URL)
+
 
 //Constantes
-const string LOCAL_URL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
+const string LOCAL_URL = "http://intranet-if";  //Addresse locale de l'intranet à enlever
 // peut par exemple être    http://intranet-if:90/
 // ou                       http://intranet-if.insa-lyon.fr
 
@@ -75,38 +103,21 @@ void AnalogGraphe   (ApacheLogFileParser& apacheParser,
 
     if (parameters->find("-x") != parameters->end())
     {
-        optionX = true;
+        optionX = true; // on devra filtrer le type des cible et en ignorer certains
     }
     if (parameters->find("-i") != parameters->end())
     {
-        optionI = true;
+        optionI = true; // on ne devra garder que les adresse sur l'intranet
     }
     map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
     if (itOptionTemps != parameters->end())
     {
-        optionT = atoi((itOptionTemps->second).c_str());
+        optionT = atoi((itOptionTemps->second).c_str());    // on ne garde que les requetes d'une certaine heure
     }
 
     while(apacheParser.GetLine(ptLogLine))
     {
         // Pour chaque ligne du fichier
-//        cout << "|" << ptLogLine->ll_ipClient << "|\t\tll_ipClient" << endl;
-//        cout << "|" << ptLogLine->ll_userLog << "|\t\tll_userLog" << endl;
-//        cout << "|" << ptLogLine->ll_authenticatedUser << "|\t\tll_authenticatedUser" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_mday << "|\t\ttm_mday" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_mon << "|\t\ttm_mon" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_year << "|\t\ttm_year" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_hour << "|\t\ttm_hour" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_min << "|\t\ttm_min" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequest.tm_sec << "|\t\ttm_sec" << endl;
-//        cout << "|" << ptLogLine->ll_timeRequestGMT << "|\t\tll_timeRequestGMT" << endl;
-//        cout << "|" << ptLogLine->ll_method << "|" << endl;
-//        cout << "|" << ptLogLine->ll_url << "|" << endl;
-//        cout << "|" << ptLogLine->ll_httpVersion << "|" << endl;
-//        cout << "|" << ptLogLine->ll_status << "|" << endl;
-//        cout << "|" << ptLogLine->ll_dataSize << "|" << endl;
-//        cout << "|" << ptLogLine->ll_referer << "|" << endl;
-//        cout << "|" << ptLogLine->ll_browserIdentification << "|" << endl << endl;
         insert = true;
         if(optionI)
         {
@@ -144,7 +155,7 @@ void AnalogGraphe   (ApacheLogFileParser& apacheParser,
     string graphName = itOptionGraphe->second;
     graph.CreateGraphVizFile(graphName);
 
-    // Affichage des 10 sites les plus visités
+    // Affichage des 10 (par défaut) sites les plus visités
     int numberOfLinks = 10;
     map<string, string>::const_iterator itLinkOption = parameters->find("-l");
     if (itLinkOption != parameters->end())
@@ -183,16 +194,16 @@ void Analog(ApacheLogFileParser& apacheParser, const map<string, string>* const 
 
     if (parameters->find("-x") != parameters->end())
     {
-        optionX = true;
+        optionX = true; // on devra filtrer le type des cible et en ignorer certains
     }
     if (parameters->find("-i") != parameters->end())
     {
-        optionI = true;
+        optionI = true; // on ne devra garder que les adresse sur l'intranet
     }
     map<string, string>::const_iterator itOptionTemps = parameters->find("-t");
     if (itOptionTemps != parameters->end())
     {
-        optionT = atoi((itOptionTemps->second).c_str());
+        optionT = atoi((itOptionTemps->second).c_str()); // on ne garde que les requetes d'une certaine heure
     }
 
     // Parcours des lignes du fichier de log

@@ -63,17 +63,12 @@ int GraphString::GetAllLinks(const string target)
     return graph[target].second;
 }
 
-unsigned int GraphString::Size() const
-{
-    return graph.size();
-}
-
 void GraphString::Display() const
 {
     for(Outer_cIterator i = graph.begin(), iend = graph.end(); i != iend; ++i)//du debut a la fin du graph
     {
-        cout << "cible : (" << i->second.second << ")" << endl << i->first << endl;
-        cout << "\treferer : " << endl;
+        cout << "Cible : (" << i->second.second << ")" << endl << i->first << endl;
+        cout << "\tReferer : " << endl;
         for (Inner_cIterator j = i->second.first.begin(), jend = i->second.first.end(); j != jend; ++j)
         {
                cout << "\t- " << j->first << "(" << j->second << ")" << endl;

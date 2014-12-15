@@ -68,8 +68,6 @@ public:
     // Mode d'emploi :
     //  renvoie le nombre total de liens allant vers la target donnée
 
-    unsigned int Size() const;
-
     void Display() const;
 
     void CreateGraphVizFile(const string fileName);
