@@ -317,7 +317,7 @@ bool CorrectExtension(const string s)
     size_t pos = s.find_last_of('.');
     if(pos != string::npos)// si on a trouvé
     {
-        return (extensionsToIgnore.find(s.substr(pos, s.size() - pos)) == extensionsToIgnore.end())
+        return (extensionsToIgnore.find(s.substr(pos, s.size() - pos)) == extensionsToIgnore.end());
     }
     else
     {
