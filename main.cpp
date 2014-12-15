@@ -11,13 +11,13 @@ using namespace std;
 
 // Prototypes
 void AnalogGraphe   (ApacheLogFileParser& apacheParser,
-                    map<string, string>* parameters,
-                    map<string, string>::const_iterator itOptionGraphe);
-void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters);
-string CleanURL(string url);
-bool CorrectExtension(string s);
-void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedLinks);
-bool IsLocal(string url);
+                    const map<string, string>* const parameters,
+                    const map<string, string>::const_iterator itOptionGraphe);
+void Analog(ApacheLogFileParser& apacheParser, const map<string, string>* const parameters);
+string CleanURL(const string url);
+bool CorrectExtension(const string s);
+void DisplayMostVisitedSet(const set<pair<string, int>, compareVisitedLinks>& visitedLinks);
+bool IsLocal(const string url);
 
 //Constantes
 const string LOCAL_URL = "http://intranet-if";  //Addresse locale de l'intranet, à enlever
@@ -61,8 +61,8 @@ int main(int argc, char** argv)
 }
 
 void AnalogGraphe   (ApacheLogFileParser& apacheParser,
-                    map<string, string>* parameters,
-                    map<string, string>::const_iterator itOptionGraphe)
+                    const map<string, string>* const parameters,
+                    const map<string, string>::const_iterator itOptionGraphe)
 {
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
@@ -170,7 +170,7 @@ void AnalogGraphe   (ApacheLogFileParser& apacheParser,
     }
 }
 
-void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
+void Analog(ApacheLogFileParser& apacheParser, const map<string, string>* const parameters)
 {
     struct LogLine *ptLogLine;
     ptLogLine = new LogLine;
@@ -271,7 +271,7 @@ void Analog(ApacheLogFileParser& apacheParser, map<string, string>* parameters)
     }
 }
 
-string CleanURL(string url)
+string CleanURL(const string url)
 //  Nettoie une url de ses paramètres
 //  ENleve la partie local de l'url lorsqu'on est sur l'intranet
 {
@@ -305,7 +305,7 @@ string CleanURL(string url)
     return result;
 }
 
-bool CorrectExtension(string s)
+bool CorrectExtension(const string s)
 // Mode d'emploi : vérifie si l'extension de la chaîne s en paramètre ne se finit pas avec une des extensions ci-dessous
 {
     set<string> extensionsToIgnore = {".css", ".js", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".svg", ".ico"};
@@ -327,7 +327,7 @@ bool CorrectExtension(string s)
     }
 }
 
-void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedLinks)
+void DisplayMostVisitedSet(const set<pair<string, int>, compareVisitedLinks>& visitedLinks)
 {
     set<pair<string, int>, compareVisitedLinks>::const_iterator it;
     set<pair<string, int>, compareVisitedLinks>::const_iterator itEnd = visitedLinks.end();
@@ -337,7 +337,7 @@ void DisplayMostVisitedSet(set<pair<string, int>, compareVisitedLinks>& visitedL
     }
 }
 
-bool IsLocal(string url)
+bool IsLocal(const string url)
 {
     //regarde si l'url du local a été trouvée
     //ayant "http://" dans la locale, cela assure que la locale se trouve en début de l'url
