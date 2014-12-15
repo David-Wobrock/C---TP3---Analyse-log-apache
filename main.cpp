@@ -293,12 +293,6 @@ string CleanURL(const string url)
         deb = url.find("/", LOCAL_URL.size());
 
     }
-//    else if(url.find(localURL2) != string::npos)
-//    {
-//        deb = url.find("/", localURL2.size());
-//    }
-
-
     if((end = url.find("?",deb)) == string::npos)// si on ne trouve pas de parametrage par point d'interrogation
     {
         if((end = url.find(";",deb)) == string::npos)// on teste le parametrage par point virgule
@@ -323,14 +317,7 @@ bool CorrectExtension(const string s)
     size_t pos = s.find_last_of('.');
     if(pos != string::npos)// si on a trouvé
     {
-        if (extensionsToIgnore.find(s.substr(pos, s.size() - pos)) == extensionsToIgnore.end())
-        {
-            return true;
-        }
-        else
-        {
-                return false;
-        }
+        return (extensionsToIgnore.find(s.substr(pos, s.size() - pos)) == extensionsToIgnore.end())
     }
     else
     {
