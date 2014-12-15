@@ -58,15 +58,15 @@ public:
 
     void Insert(const string referer, const string target);
     // Mode d'emploi :
-    //  Ajoute un lien dans le graph, partant du referer vers la target
+    //  Ajoute un lien dans le graphe, partant du referer vers la cible
 
     int GetLinks(const string referer, const string target);
     // Mode d'emploi :
-    //  renvoie le nombre de lien du graph allant du referrer à la targer
+    //  Renvoie le nombre de lien du graphe allant du referer à la cible
 
     int GetAllLinks(const string target);
     // Mode d'emploi :
-    //  renvoie le nombre total de liens allant vers la target donnée
+    //  Renvoie le nombre total de liens allant vers la cible donnée
 
     void Display() const;
     // Mode d'emploi : 
@@ -82,7 +82,7 @@ public:
     set<pair<string, int>, compareVisitedLinks> GetMostVisited(const unsigned int numberOfLinks) const;
     // Mode d'emploi : 
     //  Renvoie les "numberOfLinks" liens les plus visités dans l'ordre décroissant des visites
-    //  Sous la forme <nomDuLien, nombreDeVisitesTotales>
+    //  Sous la forme de paires <nomDuLien, nombreDeVisitesTotales>
     //  Si le nombre de liens à afficher est supérieur au nombre de liens existant dans le graphe, on affiche le maximum de liens possible
     // Contrat :
     //

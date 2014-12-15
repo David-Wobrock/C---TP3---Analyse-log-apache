@@ -58,7 +58,7 @@ map<string, string>* CommandReader::GetParameters()
 } //----- Fin de la méthode GetParameters
 
 //-------------------------------------------- Constructeurs - destructeur
-CommandReader::CommandReader (const int argc, char** const argv)
+CommandReader::CommandReader (const unsigned int argc, char** const argv)
 {
 #ifdef MAP
     cout << "Appel au constructeur de <CommandReader>" << endl;
@@ -72,7 +72,7 @@ CommandReader::CommandReader (const int argc, char** const argv)
     {
         displayHelp();
     }
-    // Sinon on analyse la ligne de commande, ce qui remplit 
+    // Sinon on analyse la ligne de commande, ce qui remplit les attributs parameters, isGood et errorMessage
     else
     {
         analyzeCommand(argc, argv);
@@ -98,9 +98,9 @@ CommandReader::~CommandReader ( )
 //----------------------------------------------------- Méthodes protégées
 bool CommandReader::insertParameters(const string key, const string value)
 {
-    // Insert renvoie un itérateur sur un élémont dont la valeur (second) est un booléen
-    // Vrai si une nouvelle paire a été insérée
-    // Faux si la clé est déjà existante
+    // map::insert renvoie un itérateur sur un élémont dont la valeur (second) est un booléen
+    //  Vrai si une nouvelle paire a été insérée
+    //  Faux si la clé est déjà existante
     return parameters->insert(pair<string, string>(key, value)).second;
 }
 
@@ -110,9 +110,9 @@ void CommandReader::setError(const string message)
     isGood = false;
 }
 
-bool CommandReader::argContains(const int argc, char** const argv, const string searchedArg)
+bool CommandReader::argContains(const unsigned int argc, char** const argv, const string searchedArg)
 {
-    for (int i = 1; i < argc; ++i)
+    for (unsigned int i = 1; i < argc; ++i)
     {
         if (string(argv[i]) == searchedArg)
         {
@@ -123,13 +123,13 @@ bool CommandReader::argContains(const int argc, char** const argv, const string 
     return false;
 }
 
-void CommandReader::analyzeCommand(const int argc, char** const argv)
+void CommandReader::analyzeCommand(const unsigned int argc, char** const argv)
 {
     set<string> optionWithoutArgs = {"-x", "-i", "-o"};
     bool hasFoundLogFile = false;
     bool hasTriedToFindLogFile = false;
 
-    for (int i = 1; i < argc; ++i)
+    for (unsigned int i = 1; i < argc; ++i)
     {
         string arg = string(argv[i]);
 

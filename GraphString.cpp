@@ -22,9 +22,9 @@ using namespace std;
 //---------------------------------------------------- Variables de classe
 
 //----------------------------------------------------------- Types privés
-typedef map<string, int> Inner_map; //map interne, contenant la cible et son nombre de liens
-typedef pair<Inner_map, int> Inner_pair;
-typedef map<string, Inner_pair> Outer_map;
+typedef map<string, int> Inner_map; // Map interne, contenant le referer et son nombre de liens
+typedef pair<Inner_map, int> Inner_pair; // La paire interne, contenant une map interne et le nombre d'accès à la cible
+typedef map<string, Inner_pair> Outer_map; // Map externe, contenant la cible et une paire interne associée
 
 
 //----------------------------------------------------------------- PUBLIC
@@ -36,7 +36,7 @@ void GraphString::Insert(const string referer, const string target)
 {
     if(graph.find(target) != graph.end())
     {
-        // la clé existe
+        // La clé existe
         Inner_pair* currentPair = &graph[target];
         Inner_map* currentInnerMap = &currentPair->first;
         currentPair->second++;// on incrémente le compteur de liens totaux
@@ -44,7 +44,7 @@ void GraphString::Insert(const string referer, const string target)
     }
     else
     {
-        //la clé n'existe pas, on la créée
+        // La clé n'existe pas, on la créée
         Inner_map newMap;
         newMap[referer] = 1;
         Inner_pair newPair(newMap, 1);
@@ -134,20 +134,23 @@ set<pair<string, int>, compareVisitedLinks> GraphString::GetMostVisited(const un
         return mostVisitedLinks;
     }
     
-        // Parcours de tous les liens
+    // Parcours de tous les liens
     Outer_cIterator outerIt;
     Outer_cIterator outerItEnd = graph.end();
     for (outerIt = graph.begin(); outerIt != outerItEnd; ++outerIt)
     {
+        // S'il y a encore de la place dans l'ensemble
         if (mostVisitedLinks.size() < numberOfLinks)
         {
             mostVisitedLinks.insert(pair<string, int>(outerIt->first, outerIt->second.second));
         }
         else
         {
+            // Sinon, on place un itérateur sur le dernier élément (étant le moins populaire, car l'ensemble est trié par ordre décroissant)
             set<pair<string, int>, compareVisitedLinks>::const_iterator i = mostVisitedLinks.begin();
             advance(i, numberOfLinks-1);
             
+            // Si la cible actuelle est plus populaire que le dernier élément de l'ensemble, on le remplace
             if (outerIt->second.second > i->second)
             {
                 mostVisitedLinks.erase(i);
